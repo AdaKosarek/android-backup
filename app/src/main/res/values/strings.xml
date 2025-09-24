@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">PetStore2025</string>
+    <string name="failed_to_load_pets">Failed to load pets</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="back">Back</string>
+    <string name="list_of_pets">List of pets</string>
+    <string name="failed_to_load_pet">Failed to load pet</string>
+    <string name="detail">Detail</string>
+    <string name="delete_pet">Delete pet</string>
+    <string name="failed_to_load_image">Failed to load image</string>
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
+    <string name="this_is_the_intro_screen_of_the_app">This is the intro screen of the app</string>
+    <string name="run_the_app">Run the app</string>
+    <string name="notification_channel_id_test" translatable="false">test_channel</string>
+    <string name="notification_channel_name_test">test channel</string>
+    <string name="password_is_not_valid">Password is not valid.</string>
+    <string name="email_is_not_valid">Email is not valid.</string>
+    <string name="login_failed">Login failed</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="sign_in">Sign in</string>
+</resources>
