@@ -2,6 +2,7 @@ package cz.petstore2025.communication
 
 import cz.petstore2025.model.Pet
 import retrofit2.Response
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class PetsRemoteRepositoryImpl @Inject constructor(private val api: PetsAPI) :
@@ -31,7 +32,10 @@ class PetsRemoteRepositoryImpl @Inject constructor(private val api: PetsAPI) :
                         )
                     )
                 }
-            } catch (exception: Exception){
+            } catch (unknownHostException: UnknownHostException) {
+                return CommunicationResult.ConnectionError()
+            }
+            catch (exception: Exception){
                 return CommunicationResult.Exception(exception)
             }
 

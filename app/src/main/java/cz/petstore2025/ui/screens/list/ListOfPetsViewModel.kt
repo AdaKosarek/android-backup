@@ -3,6 +3,7 @@ package cz.petstore2025.ui.screens.list
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cz.petstore2025.R
 import cz.petstore2025.communication.CommunicationResult
 import cz.petstore2025.communication.IPetsRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,16 +30,25 @@ class ListOfPetsViewModel @Inject constructor(
 
             when(result){
                 is CommunicationResult.ConnectionError -> {
-                    Log.i("Dotaz", "Connection error")
+                    _uiState.value = _uiState.value.copy(
+                        error = ListOfPetsScreenError(R.string.no_internet_connection)
+                    )
                 }
                 is CommunicationResult.Error -> {
-                    Log.i("Dotaz", "Error" + result.error.code)
+                    _uiState.value = _uiState.value.copy(
+                        error = ListOfPetsScreenError(R.string.failed_to_load_pets)
+                    )
                 }
                 is CommunicationResult.Exception -> {
-                    Log.i("Dotaz", "Exception" + result.exception.toString())
+                    _uiState.value = _uiState.value.copy(
+                        error = ListOfPetsScreenError(R.string.exception)
+                    )
                 }
-                is CommunicationResult.Success<*> -> {
-                    Log.i("Dotaz", "Success")
+                is CommunicationResult.Success -> {
+                    _uiState.value = _uiState.value.copy(
+                        loading = false,
+                        pets = result.data
+                    )
                 }
             }
 

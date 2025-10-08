@@ -9,6 +9,11 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
+val properties = Properties()
+properties.load(project.rootProject.file("local.properties").reader())
+
+val server = properties.getProperty("server")
+
 android {
     val versionMajor = 0
     val versionMinor = 0
@@ -43,7 +48,7 @@ android {
         }
 
         debug {
-
+            buildConfigField(type = "String", name = "SERVER_URL", value = server)
         }
 
 
