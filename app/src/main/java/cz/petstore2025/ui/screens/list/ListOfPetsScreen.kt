@@ -1,8 +1,11 @@
 package cz.petstore2025.ui.screens.list
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -62,8 +65,24 @@ fun ListOfPetsScreenContent(
     pets?.let { petsList ->
         LazyColumn(modifier = Modifier.padding(paddingValues)) {
             items(items = petsList) {
-                Text(text = it.name!!)
+                PetRow(it) {
+                    navigation.navigateToPetDetail(it.id!!)
+                }
             }
+        }
+    }
+}
+
+@Composable
+fun PetRow(
+    pet: Pet,
+    onClick: () -> Unit
+){
+    Row(modifier = Modifier.fillMaxWidth().clickable{
+        onClick()
+    }) {
+        pet.name?.let {
+            Text(text = it)
         }
     }
 

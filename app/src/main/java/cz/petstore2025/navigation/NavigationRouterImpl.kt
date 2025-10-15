@@ -11,7 +11,7 @@ class NavigationRouterImpl(private val navController: NavController) : INavigati
         navController.popBackStack()
     }
 
-    override fun navigateToPetDetail() {
-        navController.navigate(Destination.PetDetailScreen.route)
+    override fun navigateToPetDetail(petId: Long) {
+        navController.navigate(PetDetailDestination(petId))
     }
 }

@@ -9,37 +9,18 @@ class PetsRemoteRepositoryImpl @Inject constructor(private val api: PetsAPI) :
     IPetsRemoteRepository {
 
 
-        override suspend fun findByStatus(status: String): CommunicationResult<List<Pet>> {
-            try {
-                val call: Response<List<Pet>> = api.findByStatus(status)
-                if (call.isSuccessful){
-                    if (call.body() != null){
-                        // povedlo se a mam data
-                        return CommunicationResult.Success(call.body()!!)
-                    } else {
-                        return CommunicationResult.Error(
-                            CommunicationError(
-                                code = call.code(),
-                                message = call.errorBody().toString()
-                            )
-                        )
-                    }
-                } else {
-                    return CommunicationResult.Error(
-                        CommunicationError(
-                            code = call.code(),
-                            message = call.errorBody().toString()
-                        )
-                    )
-                }
-            } catch (unknownHostException: UnknownHostException) {
-                return CommunicationResult.ConnectionError()
-            }
-            catch (exception: Exception){
-                return CommunicationResult.Exception(exception)
-            }
-
+    override suspend fun findByStatus(status: String): CommunicationResult<List<Pet>> {
+        return processResponse {
+            api.findByStatus(status)
         }
+
+    }
+
+    override suspend fun findPetById(petId: Long): CommunicationResult<Pet> {
+        return processResponse {
+            api.findPetById(petId)
+        }
+    }
 
 
 }

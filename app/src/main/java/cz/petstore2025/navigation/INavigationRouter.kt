@@ -6,6 +6,6 @@ interface INavigationRouter {
     fun getNavController(): NavController
     fun returnBack()
 
-    fun navigateToPetDetail()
+    fun navigateToPetDetail(petId: Long)
 
 }

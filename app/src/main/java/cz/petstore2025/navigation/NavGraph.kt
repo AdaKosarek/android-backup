@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import cz.petstore2025.ui.screens.detail.PetDetailScreen
 import cz.petstore2025.ui.screens.list.ListOfPetsScreen
 
@@ -26,8 +27,12 @@ fun NavGraph(
             ListOfPetsScreen(navigation = navigation)
         }
 
-        composable(Destination.PetDetailScreen.route) {
-            PetDetailScreen(navigation = navigation)
+        composable<PetDetailDestination> { backStackEntry ->
+            val destination = backStackEntry.toRoute<PetDetailDestination>()
+            PetDetailScreen(
+                navigation = navigation,
+                destination = destination)
+
         }
     }
 }
