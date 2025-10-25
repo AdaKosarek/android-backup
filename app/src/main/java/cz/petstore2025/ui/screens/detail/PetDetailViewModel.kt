@@ -1,5 +1,6 @@
 package cz.petstore2025.ui.screens.detail
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.petstore2025.R
@@ -17,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PetDetailViewModel @Inject constructor(
-    private val petsRemoteRepository: IPetsRemoteRepository
+    private val petsRemoteRepository: IPetsRemoteRepository,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<PetDetailScreenUIState> = MutableStateFlow(value = PetDetailScreenUIState())
@@ -38,7 +40,7 @@ class PetDetailViewModel @Inject constructor(
 
                 is CommunicationResult.Error -> {
                     _uiState.value = _uiState.value.copy(
-                        error = R.string.failed_to_load_pets
+                        error = R.string.failed_to_load_pet
                     )
                 }
 
@@ -60,5 +62,43 @@ class PetDetailViewModel @Inject constructor(
         }
     }
 
+
+    //vymazani
+    fun deletePet(petId: Long) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(loading = true, deletionSuccess = false, deletionError = null)
+            val result = withContext(Dispatchers.IO) {
+                petsRemoteRepository.deletePet(petId)
+            }
+            when (result) {
+                is CommunicationResult.ConnectionError -> {
+                    _uiState.value = _uiState.value.copy(
+                        loading = false,
+                        deletionError = R.string.no_internet_connection
+                    )
+                }
+                is CommunicationResult.Error -> {
+                    _uiState.value = _uiState.value.copy(
+                        loading = false,
+                        deletionError = R.string.failed_to_delete_pet
+                    )
+                }
+                is CommunicationResult.Exception -> {
+                    _uiState.value = _uiState.value.copy(
+                        loading = false,
+                        deletionError = R.string.exception
+                    )
+                }
+                is CommunicationResult.Success -> {
+                    _uiState.value = _uiState.value.copy(
+                        loading = false,
+                        deletionSuccess = true
+                    )
+
+                    savedStateHandle["refreshList"] = true
+                }
+            }
+        }
+    }
 
 }

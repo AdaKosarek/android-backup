@@ -2,6 +2,7 @@ package cz.petstore2025.communication
 
 import cz.petstore2025.model.Pet
 import retrofit2.Response
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Path
@@ -18,4 +19,11 @@ interface PetsAPI {
     suspend fun findPetById(
         @Path("petId") petId: Long
     ): Response<Pet>
+
+    //vymazani
+    @Headers("Content-Type: application/json")
+    @DELETE("pet/{petId}")
+    suspend fun deletePet(
+        @Path("petId") petId: Long
+    ): Response<Unit>
 }

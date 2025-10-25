@@ -1,6 +1,7 @@
 package cz.petstore2025.navigation
 
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 
 class NavigationRouterImpl(private val navController: NavController) : INavigationRouter {
@@ -14,4 +15,7 @@ class NavigationRouterImpl(private val navController: NavController) : INavigati
     override fun navigateToPetDetail(petId: Long) {
         navController.navigate(PetDetailDestination(petId))
     }
+
+    override fun getCurrentSavedStateHandle(): SavedStateHandle? =
+        navController.currentBackStackEntry?.savedStateHandle
 }

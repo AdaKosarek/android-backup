@@ -9,4 +9,7 @@ interface IPetsRemoteRepository : IBaseRemoteRepository {
 
     suspend fun findByStatus(status: String): CommunicationResult<List<Pet>>
     suspend fun findPetById(petId: Long): CommunicationResult<Pet>
+
+    //vymazani
+    suspend fun deletePet(petId: Long): CommunicationResult<Unit>
 }

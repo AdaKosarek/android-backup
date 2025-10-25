@@ -7,4 +7,8 @@ import java.io.Serializable
 data class PetDetailScreenUIState(
     var loading: Boolean = true,
     val pet: Pet? = null,
-    var error: Int? = null)
+    var error: Int? = null,
+    //vym
+    var deletionSuccess: Boolean = false,
+    var deletionError: Int? = null
+)

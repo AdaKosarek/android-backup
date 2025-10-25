@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -31,6 +32,21 @@ fun ListOfPetsScreen(
 ){
 
     val state = viewModel.uiState.collectAsStateWithLifecycle()
+
+    //reload po vymazu
+    val savedStateHandle = navigation.getCurrentSavedStateHandle()
+
+    LaunchedEffect(Unit) {
+        savedStateHandle
+            ?.getLiveData<Boolean>("refreshList")
+            ?.observeForever { shouldRefresh ->
+                if (shouldRefresh == true) {
+                    viewModel.reloadPets()
+                    savedStateHandle["refreshList"] = false
+                }
+            }
+    }
+
 
     BaseScreen(
         topBarText = "List of pets",

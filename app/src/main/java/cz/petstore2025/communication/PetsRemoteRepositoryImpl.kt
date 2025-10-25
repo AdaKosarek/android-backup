@@ -22,5 +22,10 @@ class PetsRemoteRepositoryImpl @Inject constructor(private val api: PetsAPI) :
         }
     }
 
-
+    //vymazani
+    override suspend fun deletePet(petId: Long): CommunicationResult<Unit> {
+        return processResponse {
+            api.deletePet(petId)
+        }
+    }
 }
