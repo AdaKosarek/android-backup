@@ -33,16 +33,17 @@ fun ListOfPetsScreen(
 
     val state = viewModel.uiState.collectAsStateWithLifecycle()
 
+    val navController = navigation.getNavController()
     //reload po vymazu
-    val savedStateHandle = navigation.getCurrentSavedStateHandle()
+    val currentBackStackEntry = navController.currentBackStackEntry
 
-    LaunchedEffect(Unit) {
-        savedStateHandle
+    LaunchedEffect(currentBackStackEntry) {
+        currentBackStackEntry?.savedStateHandle
             ?.getLiveData<Boolean>("refreshList")
             ?.observeForever { shouldRefresh ->
                 if (shouldRefresh == true) {
                     viewModel.reloadPets()
-                    savedStateHandle["refreshList"] = false
+                    currentBackStackEntry.savedStateHandle["refreshList"] = false
                 }
             }
     }

@@ -11,12 +11,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -48,9 +51,14 @@ fun PetDetailScreen(
         viewModel.loadPetDetail(destination.petId)
     }
 
-    // vrátíme zpět po smazani
+    //zpět po smazani
     LaunchedEffect(state.value.deletionSuccess) {
         if (state.value.deletionSuccess) {
+            navigation.getNavController()
+                .previousBackStackEntry
+                ?.savedStateHandle
+                ?.set("refreshList", true)
+
             delay(100)
             navigation.returnBack()
         }
@@ -91,8 +99,29 @@ fun PetDetailScreen(
 
     // chybový dialog pro smazání
     state.value.deletionError?.let { errRes ->
-        // jednoduchý Snackbar nebo AlertDialog
-        // ... implementace dle vašeho stylu
+        AlertDialog(
+            onDismissRequest = {
+                viewModel.clearDeletionError()
+            },
+            confirmButton = {
+                TextButton(onClick = { viewModel.clearDeletionError() }) {
+                    Text(stringResource(R.string.ok))
+                }
+            },
+            title = {
+                Text("Delete failed title")
+            },
+            text = {
+                Text(stringResource(errRes))
+            },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Clear,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error
+                )
+            }
+        )
     }
 }
 

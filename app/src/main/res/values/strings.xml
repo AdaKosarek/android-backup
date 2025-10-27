@@ -23,4 +23,6 @@
     <string name="exception">Exception</string>
     <string name="failed_to_delete_pet">Nepodarilo se smazat zvire</string>
     <string name="no_detail_data">Zadna data, error API</string>
+    <string name="ok">ok</string>
+    <string name="delete_failed_title">Delete failed</string>
 </resources>

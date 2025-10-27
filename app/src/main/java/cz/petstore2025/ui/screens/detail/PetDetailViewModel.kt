@@ -101,4 +101,8 @@ class PetDetailViewModel @Inject constructor(
         }
     }
 
+    fun clearDeletionError() {
+        _uiState.value = _uiState.value.copy(deletionError = null)
+    }
+
 }

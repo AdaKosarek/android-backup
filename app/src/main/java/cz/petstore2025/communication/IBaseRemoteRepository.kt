@@ -43,8 +43,5 @@ interface IBaseRemoteRepository {
         } catch (exception: Exception){
             return CommunicationResult.Exception(exception)
         }
-
-
-
     }
 }
