@@ -28,4 +28,11 @@ class PetsRemoteRepositoryImpl @Inject constructor(private val api: PetsAPI) :
             api.deletePet(petId)
         }
     }
+
+    //pridani zvirete
+    override suspend fun addPet(pet: Pet): CommunicationResult<Pet> {
+        return processResponse {
+            api.addPet(pet)
+        }
+    }
 }

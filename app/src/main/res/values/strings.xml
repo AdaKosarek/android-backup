@@ -21,8 +21,19 @@
     <string name="email">Email</string>
     <string name="sign_in">Sign in</string>
     <string name="exception">Exception</string>
-    <string name="failed_to_delete_pet">Nepodarilo se smazat zvire</string>
-    <string name="no_detail_data">Zadna data, error API</string>
+    <string name="failed_to_delete_pet">Failed to delete pet</string>
+    <string name="no_detail_data">No detail data</string>
     <string name="ok">ok</string>
     <string name="delete_failed_title">Delete failed</string>
+    <string name="failed_to_add_pet">Failed to add pet</string>
+    <string name="name_required">Name required</string>
+    <string name="tag_label">Tag label</string>
+    <string name="add_tag">Add tag</string>
+    <string name="status_label">Status label</string>
+    <string name="photos">Photos</string>
+    <string name="add_photo">Add photo</string>
+    <string name="add_pet">Add pet</string>
+    <string name="pet_name">Pet name</string>
+    <string name="save">Save</string>
+    <string name="add_failed_title">Add failed title</string>
 </resources>

@@ -12,4 +12,6 @@ interface IPetsRemoteRepository : IBaseRemoteRepository {
 
     //vymazani
     suspend fun deletePet(petId: Long): CommunicationResult<Unit>
+
+    suspend fun addPet(pet: Pet): CommunicationResult<Pet>
 }

@@ -9,7 +9,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import cz.petstore2025.R
 import cz.petstore2025.model.Pet
 import cz.petstore2025.navigation.INavigationRouter
 import cz.petstore2025.ui.elements.BaseScreen
@@ -48,7 +53,6 @@ fun ListOfPetsScreen(
             }
     }
 
-
     BaseScreen(
         topBarText = "List of pets",
         showLoading = state.value.loading,
@@ -60,7 +64,14 @@ fun ListOfPetsScreen(
             )
         } else null,
         floatingActionButton = {
-
+            FloatingActionButton(
+                onClick = { navigation.navigateToAddPet() }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(R.string.add_pet)
+                )
+            }
         }
     ) {
         ListOfPetsScreenContent(

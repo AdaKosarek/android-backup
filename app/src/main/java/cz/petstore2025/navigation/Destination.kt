@@ -5,4 +5,5 @@ sealed class Destination(
 ){
     object ListOfPetsScreen : Destination(route = "list_of_pets")
     object PetDetailScreen : Destination(route = "detail")
+    object AddPetScreen : Destination(route = "add_pet")
 }

@@ -16,6 +16,11 @@ class NavigationRouterImpl(private val navController: NavController) : INavigati
         navController.navigate(PetDetailDestination(petId))
     }
 
+    override fun navigateToAddPet() {
+        navController.navigate(Destination.AddPetScreen.route)
+    }
+
+    //pro reload
     override fun getCurrentSavedStateHandle(): SavedStateHandle? =
         navController.currentBackStackEntry?.savedStateHandle
 }

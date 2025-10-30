@@ -149,7 +149,7 @@ fun PetDetailScreenContent(
                 Spacer(modifier = Modifier.height(8.dp))
                 it.photoUrls?.let { urls ->
                     if (urls.isNotEmpty()) {
-                        // zobrazíme jen první fotku jako ukázku
+                        // jen prvni fotka
                         Image(
                             painter = rememberAsyncImagePainter(urls.first()),
                             contentDescription = it.name,

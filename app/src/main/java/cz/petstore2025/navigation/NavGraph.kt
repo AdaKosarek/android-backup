@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import cz.petstore2025.ui.screens.addpet.AddPetScreen
 import cz.petstore2025.ui.screens.detail.PetDetailScreen
 import cz.petstore2025.ui.screens.list.ListOfPetsScreen
 
@@ -33,6 +34,10 @@ fun NavGraph(
                 navigation = navigation,
                 destination = destination)
 
+        }
+
+        composable(Destination.AddPetScreen.route) {
+            AddPetScreen(navigation = navigation)
         }
     }
 }
