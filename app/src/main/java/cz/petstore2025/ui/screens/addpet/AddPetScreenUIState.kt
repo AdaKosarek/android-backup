@@ -8,8 +8,8 @@ data class AddPetScreenUIState(
     val categorySelection: String = "",
     val tags: List<String> = emptyList(),
     val photoUris: List<Uri> = emptyList(),
-    val status: String = "available",
     val error: Int? = null,
     val success: Boolean = false
 )
+
 

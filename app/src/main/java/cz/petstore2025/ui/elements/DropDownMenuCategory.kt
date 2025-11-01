@@ -27,7 +27,7 @@ fun DropdownMenuCategory(
     selectedCategory: String,
     onCategorySelected: (String) -> Unit
 ) {
-    val categoryOptions = listOf("Dogs", "Cats", "Birds", "Fishes")
+    val categoryOptions = listOf("Dogs", "Cats", "Birds", "Fishes", "Other")
     var expanded by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxWidth()) {

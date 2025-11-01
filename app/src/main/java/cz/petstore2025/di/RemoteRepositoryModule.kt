@@ -15,9 +15,8 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object RemoteRepositoryModule {
-
     @Provides
     @Singleton
-    fun providePetsRemoteRepository(petsAPI: PetsAPI, @ApplicationContext context: Context): IPetsRemoteRepository =
-        PetsRemoteRepositoryImpl(petsAPI, context)
+    fun providePetsRemoteRepository(petsAPI: PetsAPI): IPetsRemoteRepository =
+        PetsRemoteRepositoryImpl(petsAPI)
 }

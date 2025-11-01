@@ -1,6 +1,6 @@
 package cz.petstore2025.communication
 
-import cz.petstore2025.model.ApiResponse
+import cz.petstore2025.model.Order
 import cz.petstore2025.model.Pet
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -42,12 +42,9 @@ interface PetsAPI {
     ): Response<Pet>
 
     @Headers("Content-Type: application/json")
-    @Multipart
-    @POST("pet/{petId}/uploadImage")
-    suspend fun uploadPetImage(
-        @Path("petId") petId: Long,
-        @Part("additionalMetadata") additionalMetadata: RequestBody?,
-        @Part file: MultipartBody.Part
-    ): Response<ApiResponse>
+    @POST("store/order")
+    suspend fun placeOrder(
+        @Body order: Order
+    ): Response<Order>
 
 }

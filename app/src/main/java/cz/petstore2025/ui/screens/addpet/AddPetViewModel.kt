@@ -40,12 +40,12 @@ class AddPetViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(tags = newTags)
     }
 
-    fun onPhotoUrisChanged(newUris: List<Uri>) {
+    fun onPhotoUrisChange(newUris: List<Uri>) {
         _uiState.value = _uiState.value.copy(photoUris = newUris)
     }
 
-    fun onStatusChanged(newStatus: String) {
-        _uiState.value = _uiState.value.copy(status = newStatus)
+    fun showTemporaryLoading() {
+        _uiState.value = _uiState.value.copy(loading = true)
     }
 
     fun addPet() {
@@ -82,43 +82,32 @@ class AddPetViewModel @Inject constructor(
                 }
             } else null
 
-            val petId = System.currentTimeMillis() * 1000 + (0..999).random()
+            val photoUrls = current.photoUris.map { it.toString() }
+
             val newPet = Pet(
-                id = petId,
+                id = System.currentTimeMillis(),
                 category = category,
                 name = current.name.trim(),
-                photoUrls = emptyList(),
+                photoUrls = photoUrls,
                 tags = tagsList,
-                status = current.status.ifBlank { "available" }
+                status = "available"
             )
 
-
-            //
-            when (val petResult = withContext(Dispatchers.IO) { petsRemoteRepository.addPet(newPet) }) {
+            when (val petResult = withContext(Dispatchers.IO) {
+                petsRemoteRepository.addPet(newPet)
+            }) {
                 is CommunicationResult.Success -> {
-                    val createdPet = petResult.data
-                    val petId = newPet.id ?: createdPet.id ?: return@launch
-
-                    //Nahraj všechny fotky paralelně
-                    current.photoUris.forEach { uri ->
-                        petsRemoteRepository.uploadPetImage(
-                            petId = petId,
-                            imageUri = uri,
-                            additionalMetadata = "Uploaded from Android app"
-                        )
-                    }
-
                     _uiState.value = current.copy(loading = false, success = true)
                 }
-
-                is CommunicationResult.ConnectionError -> _uiState.value =
-                    current.copy(loading = false, error = R.string.no_internet_connection)
-
-                is CommunicationResult.Error -> _uiState.value =
-                    current.copy(loading = false, error = R.string.failed_to_add_pet)
-
-                is CommunicationResult.Exception -> _uiState.value =
-                    current.copy(loading = false, error = R.string.exception)
+                is CommunicationResult.ConnectionError -> {
+                    _uiState.value = current.copy(loading = false, error = R.string.no_internet_connection)
+                }
+                is CommunicationResult.Error -> {
+                    _uiState.value = current.copy(loading = false, error = R.string.failed_to_add_pet)
+                }
+                is CommunicationResult.Exception -> {
+                    _uiState.value = current.copy(loading = false, error = R.string.exception)
+                }
             }
         }
     }
@@ -127,5 +116,7 @@ class AddPetViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(error = null)
     }
 }
+
+
 
 

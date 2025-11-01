@@ -31,8 +31,7 @@ import cz.petstore2025.R
 import cz.petstore2025.navigation.INavigationRouter
 import cz.petstore2025.ui.elements.BaseScreen
 import cz.petstore2025.ui.elements.DropdownMenuCategory
-import cz.petstore2025.ui.elements.PhotoPickerInput
-import cz.petstore2025.ui.elements.StatusDropdown
+import cz.petstore2025.ui.elements.PhotoUrlPicker
 import cz.petstore2025.ui.elements.TagInputField
 import kotlinx.coroutines.delay
 
@@ -47,11 +46,12 @@ fun AddPetScreen(
 
     LaunchedEffect(state.success) {
         if (state.success) {
+            viewModel.showTemporaryLoading()
             navigation.getNavController()
                 .previousBackStackEntry
                 ?.savedStateHandle
                 ?.set("refreshList", true)
-            delay(7000)
+            delay(6000)
             navigation.returnBack()
         }
     }
@@ -84,13 +84,6 @@ fun AddPetScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            StatusDropdown(
-                selectedStatus = state.status,
-                onStatusChange = viewModel::onStatusChanged
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             TagInputField(
                 tags = state.tags,
                 onTagsChange = viewModel::onTagsChanged
@@ -98,9 +91,9 @@ fun AddPetScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            PhotoPickerInput(
-                photoUris = state.photoUris,
-                onPhotoUrisChange = viewModel::onPhotoUrisChanged
+            PhotoUrlPicker(
+                selectedUris = state.photoUris,
+                onPhotoUrisChange = viewModel::onPhotoUrisChange
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -125,8 +118,10 @@ fun AddPetScreen(
                 )
             },
             title = {
-                Text(text = stringResource(R.string.add_failed_title),
-                    color = MaterialTheme.colorScheme.error)
+                Text(
+                    text = stringResource(R.string.add_failed_title),
+                    color = MaterialTheme.colorScheme.error
+                )
             },
             text = {
                 Text(text = stringResource(errRes))

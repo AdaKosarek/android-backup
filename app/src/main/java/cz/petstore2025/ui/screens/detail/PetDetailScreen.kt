@@ -1,6 +1,8 @@
 package cz.petstore2025.ui.screens.detail
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,7 +11,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
@@ -25,7 +32,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -51,7 +65,7 @@ fun PetDetailScreen(
         viewModel.loadPetDetail(destination.petId)
     }
 
-    //zpět po smazani
+
     LaunchedEffect(state.value.deletionSuccess) {
         if (state.value.deletionSuccess) {
             navigation.getNavController()
@@ -66,7 +80,14 @@ fun PetDetailScreen(
 
     BaseScreen(
         topBarText = "Detail",
-        onBackClick = { navigation.returnBack() },
+        onBackClick = {
+            navigation.getNavController()
+                .previousBackStackEntry
+                ?.savedStateHandle
+                ?.set("refreshList", true)
+
+            navigation.returnBack()
+        },
         showLoading = state.value.loading,
         placeholderScreenContent = when {//
             state.value.error != null -> PlaceholderScreenContent(
@@ -82,7 +103,6 @@ fun PetDetailScreen(
             else -> null
         },
         actions = {
-            // tlacitko smazani
             IconButton(onClick = { viewModel.deletePet(destination.petId) }) {
                 Icon(
                     imageVector = Icons.Default.Delete,
@@ -97,7 +117,6 @@ fun PetDetailScreen(
         )
     }
 
-    // chybový dialog pro smazání
     state.value.deletionError?.let { errRes ->
         AlertDialog(
             onDismissRequest = {
@@ -130,40 +149,146 @@ fun PetDetailScreenContent(
     paddingValues: PaddingValues,
     pet: Pet?
 ) {
-    Surface(modifier = Modifier
-        .fillMaxSize()
-        .padding(paddingValues)
-        .padding(16.dp)
+    val fallbackImage = painterResource(id = R.drawable.un_dog)
+
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
     ) {
-        pet?.let {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Text(text = "Name: ${it.name ?: "-"}", style = MaterialTheme.typography.titleLarge)
+        if (pet == null) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(
+                    text = stringResource(R.string.no_detail_data),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+        } else {
+            val name = pet.name?.takeIf { it.isNotBlank() } ?: "Pet"
+
+            val category = pet.category?.name
+                ?.takeIf { it.isNotBlank() && it.lowercase() != "string" }
+                ?: "Unknown"
+
+            val tagsText = pet.tags
+                ?.mapNotNull { tag ->
+                    val tagName = tag.name?.takeIf { it.isNotBlank() && it.lowercase() != "string" }
+                    tagName ?: "Unknown"
+                }
+                ?.joinToString(", ")
+                ?: "No tags"
+
+            val originalStatus = pet.status?.lowercase() ?: "available"
+            val normalizedStatus = when (originalStatus) {
+                "available", "pending", "sold" -> originalStatus
+                else -> "available"
+            }
+
+            val statusColor = when (normalizedStatus) {
+                "available" -> Color(0xFF2E7D32)
+                "pending" -> Color(0xFFF9A825)
+                "sold" -> Color(0xFFC62828)
+                else -> MaterialTheme.colorScheme.onSurfaceVariant
+            }
+
+            val photos = pet.photoUrls?.filter {
+                it.isNotBlank() && it.lowercase() != "string" && !it.contains("example", ignoreCase = true)
+                        (it.startsWith("http://") || it.startsWith("https://"))
+            } ?: emptyList()
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp)
+            ) {
+                if (photos.isNotEmpty()) {
+                    Image(
+                        painter = rememberAsyncImagePainter(photos.first()),
+                        contentDescription = name,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(220.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                    )
+                } else {
+                    Image(
+                        painter = fallbackImage,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(220.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Name: $name",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "ID: ${it.id}", style = MaterialTheme.typography.bodyMedium)
+
+                Text(
+                    text = "Category: $category",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Category: ${it.category?.name ?: "-"}", style = MaterialTheme.typography.bodyMedium)
+
+                Text(
+                    buildAnnotatedString {
+                        withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onSurface)) {
+                            append("Status: ")
+                        }
+                        withStyle(style = SpanStyle(color = statusColor, fontWeight = FontWeight.SemiBold)) {
+                            append(normalizedStatus)
+                        }
+                    },
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Status: ${it.status ?: "-"}", style = MaterialTheme.typography.bodyMedium)
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Tags: ${it.tags?.joinToString { tag -> tag.name ?: "-" } ?: "-"}", style = MaterialTheme.typography.bodyMedium)
-                Spacer(modifier = Modifier.height(8.dp))
-                it.photoUrls?.let { urls ->
-                    if (urls.isNotEmpty()) {
-                        // jen prvni fotka
-                        Image(
-                            painter = rememberAsyncImagePainter(urls.first()),
-                            contentDescription = it.name,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(200.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                        )
+
+                Text(
+                    text = "Tags: $tagsText",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                if (photos.size > 1) {
+                    Text(
+                        text = "More photos",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        items(photos.drop(1)) { url ->
+                            Image(
+                                painter = rememberAsyncImagePainter(url),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                            )
+                        }
                     }
                 }
-            }
-        } ?: run {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = "No details available", style = MaterialTheme.typography.bodyMedium)
             }
         }
     }
