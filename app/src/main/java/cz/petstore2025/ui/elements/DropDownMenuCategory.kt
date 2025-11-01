@@ -8,8 +8,6 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -25,19 +23,19 @@ import cz.petstore2025.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StatusDropdown(
-    selectedStatus: String,
-    onStatusChange: (String) -> Unit
+fun DropdownMenuCategory(
+    selectedCategory: String,
+    onCategorySelected: (String) -> Unit
 ) {
-    val statusOptions = listOf("available", "pending", "sold")
+    val categoryOptions = listOf("Dogs", "Cats", "Birds", "Fishes")
     var expanded by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxWidth()) {
         OutlinedTextField(
-            value = selectedStatus,
-            onValueChange = { /*  */ },
+            value = selectedCategory,
+            onValueChange = { /* */ },
             readOnly = true,
-            label = { Text(stringResource(R.string.status_label)) },
+            label = { Text(stringResource(R.string.category_label)) },
             trailingIcon = {
                 IconButton(onClick = { expanded = !expanded }) {
                     Icon(
@@ -57,11 +55,11 @@ fun StatusDropdown(
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            statusOptions.forEach { status ->
+            categoryOptions.forEach { category ->
                 DropdownMenuItem(
-                    text = { Text(status) },
+                    text = { Text(category) },
                     onClick = {
-                        onStatusChange(status)
+                        onCategorySelected(category)
                         expanded = false
                     }
                 )

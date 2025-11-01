@@ -1,9 +1,12 @@
 package cz.petstore2025.communication
 
+import android.net.Uri
+import cz.petstore2025.model.ApiResponse
 import cz.petstore2025.model.Pet
 import retrofit2.Response
 import retrofit2.http.Path
 import retrofit2.http.Query
+import java.io.File
 
 interface IPetsRemoteRepository : IBaseRemoteRepository {
 
@@ -14,4 +17,10 @@ interface IPetsRemoteRepository : IBaseRemoteRepository {
     suspend fun deletePet(petId: Long): CommunicationResult<Unit>
 
     suspend fun addPet(pet: Pet): CommunicationResult<Pet>
+
+    suspend fun uploadPetImage(
+        petId: Long,
+        imageUri: Uri,
+        additionalMetadata: String? = null
+    ): CommunicationResult<ApiResponse>
 }

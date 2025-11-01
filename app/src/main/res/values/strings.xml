@@ -27,13 +27,15 @@
     <string name="delete_failed_title">Delete failed</string>
     <string name="failed_to_add_pet">Failed to add pet</string>
     <string name="name_required">Name required</string>
-    <string name="tag_label">Tag label</string>
+    <string name="tag_label">Tag</string>
     <string name="add_tag">Add tag</string>
-    <string name="status_label">Status label</string>
+    <string name="status_label">Status</string>
     <string name="photos">Photos</string>
     <string name="add_photo">Add photo</string>
     <string name="add_pet">Add pet</string>
     <string name="pet_name">Pet name</string>
     <string name="save">Save</string>
-    <string name="add_failed_title">Add failed title</string>
+    <string name="add_failed_title">Adding failed</string>
+    <string name="photo_required">Photo required</string>
+    <string name="category_label">Category</string>
 </resources>

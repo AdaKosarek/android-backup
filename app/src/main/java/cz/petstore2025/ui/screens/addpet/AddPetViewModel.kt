@@ -1,11 +1,15 @@
 package cz.petstore2025.ui.screens.addpet
 
 import android.net.Uri
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import cz.petstore2025.R
 import cz.petstore2025.communication.CommunicationResult
 import cz.petstore2025.communication.IPetsRemoteRepository
+import cz.petstore2025.model.Category
 import cz.petstore2025.model.Pet
 import cz.petstore2025.model.Tag
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddPetViewModel @Inject constructor(
-    private val petsRemoteRepository: IPetsRemoteRepository
+    private val petsRemoteRepository: IPetsRemoteRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AddPetScreenUIState())
@@ -26,6 +30,10 @@ class AddPetViewModel @Inject constructor(
 
     fun onNameChanged(newName: String) {
         _uiState.value = _uiState.value.copy(name = newName)
+    }
+
+    fun onCategorySelectionChanged(newCategory: String) {
+        _uiState.value = _uiState.value.copy(categorySelection = newCategory)
     }
 
     fun onTagsChanged(newTags: List<String>) {
@@ -36,47 +44,81 @@ class AddPetViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(photoUris = newUris)
     }
 
-
     fun onStatusChanged(newStatus: String) {
         _uiState.value = _uiState.value.copy(status = newStatus)
     }
 
     fun addPet() {
         val current = _uiState.value
+
         if (current.name.isBlank()) {
             _uiState.value = current.copy(error = R.string.name_required)
+            return
+        }
+        if (current.photoUris.isEmpty()) {
+            _uiState.value = current.copy(error = R.string.photo_required)
             return
         }
 
         viewModelScope.launch {
             _uiState.value = current.copy(loading = true, error = null)
+
+            val categoryId = when (current.categorySelection) {
+                "Dogs" -> 1L
+                "Cats" -> 2L
+                "Birds" -> 3L
+                "Fishes" -> 4L
+                "Other" -> 5L
+                else -> 6L
+            }
+
+            val category = if (current.categorySelection.isNotBlank()) {
+                Category(id = categoryId, name = current.categorySelection.trim())
+            } else null
+
+            val tagsList = if (current.tags.isNotEmpty()) {
+                current.tags.mapIndexed { index, tagName ->
+                    Tag(id = index.toLong() + 1, name = tagName.trim())
+                }
+            } else null
+
+            val petId = System.currentTimeMillis() * 1000 + (0..999).random()
             val newPet = Pet(
-                name = current.name,
-                photoUrls = current.photoUris.map { it.toString() },
-                tags = current.tags.mapIndexed { index, tagName ->
-                    Tag(id = index.toLong(), name = tagName)
-                },
-                status = current.status
+                id = petId,
+                category = category,
+                name = current.name.trim(),
+                photoUrls = emptyList(),
+                tags = tagsList,
+                status = current.status.ifBlank { "available" }
             )
 
 
-            val result = withContext(Dispatchers.IO) {
-                petsRemoteRepository.addPet(newPet)
-            }
-
-            when (result) {
-                is CommunicationResult.ConnectionError -> {
-                    _uiState.value = current.copy(loading = false, error = R.string.no_internet_connection)
-                }
-                is CommunicationResult.Error -> {
-                    _uiState.value = current.copy(loading = false, error = R.string.failed_to_add_pet)
-                }
-                is CommunicationResult.Exception -> {
-                    _uiState.value = current.copy(loading = false, error = R.string.exception)
-                }
+            //
+            when (val petResult = withContext(Dispatchers.IO) { petsRemoteRepository.addPet(newPet) }) {
                 is CommunicationResult.Success -> {
+                    val createdPet = petResult.data
+                    val petId = newPet.id ?: createdPet.id ?: return@launch
+
+                    //Nahraj všechny fotky paralelně
+                    current.photoUris.forEach { uri ->
+                        petsRemoteRepository.uploadPetImage(
+                            petId = petId,
+                            imageUri = uri,
+                            additionalMetadata = "Uploaded from Android app"
+                        )
+                    }
+
                     _uiState.value = current.copy(loading = false, success = true)
                 }
+
+                is CommunicationResult.ConnectionError -> _uiState.value =
+                    current.copy(loading = false, error = R.string.no_internet_connection)
+
+                is CommunicationResult.Error -> _uiState.value =
+                    current.copy(loading = false, error = R.string.failed_to_add_pet)
+
+                is CommunicationResult.Exception -> _uiState.value =
+                    current.copy(loading = false, error = R.string.exception)
             }
         }
     }
@@ -85,3 +127,5 @@ class AddPetViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(error = null)
     }
 }
+
+

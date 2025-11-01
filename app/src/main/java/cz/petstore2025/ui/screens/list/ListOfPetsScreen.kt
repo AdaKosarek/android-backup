@@ -21,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import cz.petstore2025.R
 import cz.petstore2025.model.Pet
 import cz.petstore2025.navigation.INavigationRouter
@@ -43,6 +45,7 @@ fun ListOfPetsScreen(
     val currentBackStackEntry = navController.currentBackStackEntry
 
     LaunchedEffect(currentBackStackEntry) {
+
         currentBackStackEntry?.savedStateHandle
             ?.getLiveData<Boolean>("refreshList")
             ?.observeForever { shouldRefresh ->
@@ -52,6 +55,7 @@ fun ListOfPetsScreen(
                 }
             }
     }
+
 
     BaseScreen(
         topBarText = "List of pets",
@@ -113,7 +117,6 @@ fun PetRow(
             Text(text = it)
         }
     }
-
 }
 
 

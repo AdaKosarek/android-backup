@@ -30,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cz.petstore2025.R
 import cz.petstore2025.navigation.INavigationRouter
 import cz.petstore2025.ui.elements.BaseScreen
+import cz.petstore2025.ui.elements.DropdownMenuCategory
 import cz.petstore2025.ui.elements.PhotoPickerInput
 import cz.petstore2025.ui.elements.StatusDropdown
 import cz.petstore2025.ui.elements.TagInputField
@@ -50,7 +51,7 @@ fun AddPetScreen(
                 .previousBackStackEntry
                 ?.savedStateHandle
                 ?.set("refreshList", true)
-            delay(100)
+            delay(7000)
             navigation.returnBack()
         }
     }
@@ -69,35 +70,40 @@ fun AddPetScreen(
         ) {
             OutlinedTextField(
                 value = state.name,
-                onValueChange = { viewModel.onNameChanged(it) },
+                onValueChange = viewModel::onNameChanged,
                 label = { Text(stringResource(R.string.pet_name)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            DropdownMenuCategory(
+                selectedCategory = state.categorySelection,
+                onCategorySelected = viewModel::onCategorySelectionChanged
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             StatusDropdown(
                 selectedStatus = state.status,
-                onStatusChange = {
-                    viewModel.onStatusChanged(it)
-                }
+                onStatusChange = viewModel::onStatusChanged
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             TagInputField(
                 tags = state.tags,
-                onTagsChange = { viewModel.onTagsChanged(it) }
+                onTagsChange = viewModel::onTagsChanged
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             PhotoPickerInput(
                 photoUris = state.photoUris,
-                onPhotoUrisChange = { viewModel.onPhotoUrisChanged(it) }
+                onPhotoUrisChange = viewModel::onPhotoUrisChanged
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.weight(1f))
 
             Button(
                 onClick = { viewModel.addPet() },
@@ -110,7 +116,7 @@ fun AddPetScreen(
 
     state.error?.let { errRes ->
         AlertDialog(
-            onDismissRequest = { viewModel.clearError() },
+            onDismissRequest = viewModel::clearError,
             icon = {
                 Icon(
                     imageVector = Icons.Default.Warning,
@@ -119,16 +125,14 @@ fun AddPetScreen(
                 )
             },
             title = {
-                Text(
-                    text = stringResource(R.string.add_failed_title),
-                    color = MaterialTheme.colorScheme.error
-                )
+                Text(text = stringResource(R.string.add_failed_title),
+                    color = MaterialTheme.colorScheme.error)
             },
             text = {
                 Text(text = stringResource(errRes))
             },
             confirmButton = {
-                TextButton(onClick = { viewModel.clearError() }) {
+                TextButton(onClick = viewModel::clearError) {
                     Text(text = stringResource(R.string.ok))
                 }
             },
@@ -138,3 +142,5 @@ fun AddPetScreen(
         )
     }
 }
+
+
