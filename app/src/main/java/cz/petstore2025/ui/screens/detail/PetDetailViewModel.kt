@@ -101,6 +101,37 @@ class PetDetailViewModel @Inject constructor(
         }
     }
 
+    //order
+    fun orderPet(petId: Long, quantity: Int) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(loading = true, orderSuccess = false, orderError = null)
+
+            val result = withContext(Dispatchers.IO) {
+                petsRemoteRepository.orderPet(petId, quantity)
+            }
+
+            when (result) {
+                is CommunicationResult.Success -> {
+                    _uiState.value = _uiState.value.copy(loading = false, orderSuccess = true)
+                    savedStateHandle["refreshList"] = true
+                }
+                is CommunicationResult.ConnectionError -> {
+                    _uiState.value = _uiState.value.copy(loading = false, orderError = R.string.no_internet_connection)
+                }
+                is CommunicationResult.Error -> {
+                    _uiState.value = _uiState.value.copy(loading = false, orderError = R.string.failed_to_order_pet)
+                }
+                is CommunicationResult.Exception -> {
+                    _uiState.value = _uiState.value.copy(loading = false, orderError = R.string.exception)
+                }
+            }
+        }
+    }
+
+
+    fun clearOrderError() {
+        _uiState.value = _uiState.value.copy(orderError = null)
+    }
     fun clearDeletionError() {
         _uiState.value = _uiState.value.copy(deletionError = null)
     }

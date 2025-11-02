@@ -20,12 +20,12 @@ class DataStoreRepositoryImpl(private val context: Context) : IDataStoreReposito
             val preferencesKey = booleanPreferencesKey(DataStoreConstants.LOGIN_SUCCESSFUL)
             val preferences = context.dataStore.data.first()
             if (!preferences.contains(preferencesKey))
-                true
+                false
             else
                 preferences[preferencesKey]!!
         } catch (e: Exception) {
             e.printStackTrace()
-            true
+            false
         }
     }
 }

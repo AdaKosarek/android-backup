@@ -36,9 +36,17 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        val showLogin = intent?.getBooleanExtra("login", false) ?: false
+
+        val startDestination = if (showLogin) {
+            Destination.LoginScreen.route
+        } else {
+            Destination.ListOfPetsScreen.route
+        }
+
         setContent {
             PetStore2025Theme {
-                NavGraph(startDestination = Destination.ListOfPetsScreen.route)
+                NavGraph(startDestination = startDestination)
             }
         }
     }

@@ -1,6 +1,7 @@
 package cz.petstore2025.ui.screens.addpet
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,6 +37,7 @@ import cz.petstore2025.ui.elements.TagInputField
 import kotlinx.coroutines.delay
 
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddPetScreen(
@@ -44,6 +46,7 @@ fun AddPetScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+    //rel
     LaunchedEffect(state.success) {
         if (state.success) {
             viewModel.showTemporaryLoading()
@@ -51,7 +54,8 @@ fun AddPetScreen(
                 .previousBackStackEntry
                 ?.savedStateHandle
                 ?.set("refreshList", true)
-            delay(6000)
+
+            delay(3000)
             navigation.returnBack()
         }
     }
@@ -61,52 +65,14 @@ fun AddPetScreen(
         onBackClick = { navigation.returnBack() },
         showLoading = state.loading
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            OutlinedTextField(
-                value = state.name,
-                onValueChange = viewModel::onNameChanged,
-                label = { Text(stringResource(R.string.pet_name)) },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            DropdownMenuCategory(
-                selectedCategory = state.categorySelection,
-                onCategorySelected = viewModel::onCategorySelectionChanged
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            TagInputField(
-                tags = state.tags,
-                onTagsChange = viewModel::onTagsChanged
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            PhotoUrlPicker(
-                selectedUris = state.photoUris,
-                onPhotoUrisChange = viewModel::onPhotoUrisChange
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Button(
-                onClick = { viewModel.addPet() },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = stringResource(R.string.save))
-            }
-        }
+        AddPetScreenContent(
+            paddingValues = paddingValues,
+            state = state,
+            viewModel = viewModel
+        )
     }
 
+    // AlertDialog pro chybu
     state.error?.let { errRes ->
         AlertDialog(
             onDismissRequest = viewModel::clearError,
@@ -123,9 +89,7 @@ fun AddPetScreen(
                     color = MaterialTheme.colorScheme.error
                 )
             },
-            text = {
-                Text(text = stringResource(errRes))
-            },
+            text = { Text(text = stringResource(errRes)) },
             confirmButton = {
                 TextButton(onClick = viewModel::clearError) {
                     Text(text = stringResource(R.string.ok))
@@ -135,6 +99,59 @@ fun AddPetScreen(
             containerColor = MaterialTheme.colorScheme.surface,
             tonalElevation = 6.dp
         )
+    }
+}
+
+@Composable
+fun AddPetScreenContent(
+    paddingValues: PaddingValues,
+    state: AddPetScreenUIState,
+    viewModel: AddPetViewModel
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+        OutlinedTextField(
+            value = state.name,
+            onValueChange = viewModel::onNameChanged,
+            label = { Text(stringResource(R.string.pet_name)) },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        DropdownMenuCategory(
+            selectedCategory = state.categorySelection,
+            onCategorySelected = viewModel::onCategorySelectionChanged
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        TagInputField(
+            tags = state.tags,
+            onTagsChange = viewModel::onTagsChanged
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        PhotoUrlPicker(
+            selectedUris = state.photoUris,
+            onPhotoUrisChange = viewModel::onPhotoUrisChange
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Button(
+            onClick = { viewModel.addPet() },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !state.loading
+        ) {
+            Text(text = stringResource(R.string.save))
+        }
     }
 }
 

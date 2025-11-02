@@ -70,5 +70,4 @@ fun BaseScreen(
                 content(it)
             }
         }
-
 }

@@ -11,6 +11,7 @@ import androidx.navigation.toRoute
 import cz.petstore2025.ui.screens.addpet.AddPetScreen
 import cz.petstore2025.ui.screens.detail.PetDetailScreen
 import cz.petstore2025.ui.screens.list.ListOfPetsScreen
+import cz.petstore2025.ui.screens.login.LoginScreen
 
 @ExperimentalFoundationApi
 @Composable
@@ -38,6 +39,16 @@ fun NavGraph(
 
         composable(Destination.AddPetScreen.route) {
             AddPetScreen(navigation = navigation)
+        }
+
+        composable(Destination.LoginScreen.route) {
+            LoginScreen(
+                onLoginSuccess = {
+                    navController.navigate(Destination.ListOfPetsScreen.route) {
+                        popUpTo(Destination.LoginScreen.route) { inclusive = true }
+                    }
+                }
+            )
         }
     }
 }

@@ -9,6 +9,7 @@ interface INavigationRouter {
 
     fun navigateToPetDetail(petId: Long)
     fun navigateToAddPet()
+    fun navigateToLogin()
 
     fun getCurrentSavedStateHandle(): SavedStateHandle?
 }

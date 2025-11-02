@@ -1,21 +1,14 @@
 package cz.petstore2025.ui.screens.list
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -43,20 +36,20 @@ fun ListOfPetsScreen(
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
     val navController = navigation.getNavController()
+    val listState = rememberLazyListState()
 
     //reload
-    val currentBackStackEntry = navController.currentBackStackEntry
-    LaunchedEffect(currentBackStackEntry) {
-        currentBackStackEntry?.savedStateHandle
-            ?.getLiveData<Boolean>("refreshList")
-            ?.observeForever { shouldRefresh ->
-                if (shouldRefresh == true) {
+    LaunchedEffect(Unit) {
+        navController.currentBackStackEntryFlow.collect { entry ->
+            val handle = entry.savedStateHandle
+            handle.getStateFlow("refreshList", false).collect { shouldRefresh ->
+                if (shouldRefresh) {
                     viewModel.reloadPets()
-                    currentBackStackEntry.savedStateHandle["refreshList"] = false
+                    handle["refreshList"] = false
                 }
             }
+        }
     }
-
     BaseScreen(
         topBarText = stringResource(R.string.list_of_pets),
         showLoading = state.value.loading,
@@ -79,7 +72,8 @@ fun ListOfPetsScreen(
         ListOfPetsScreenContent(
             paddingValues = it,
             navigation = navigation,
-            pets = state.value.pets
+            pets = state.value.pets,
+            listState = listState
         )
     }
 }
@@ -88,11 +82,13 @@ fun ListOfPetsScreen(
 fun ListOfPetsScreenContent(
     paddingValues: PaddingValues,
     navigation: INavigationRouter,
-    pets: List<Pet>? = null
+    pets: List<Pet>? = null,
+    listState: LazyListState
 ) {
 
     pets?.let { petsList ->
         LazyColumn(
+            state = listState,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)

@@ -10,5 +10,8 @@ data class PetDetailScreenUIState(
     var error: Int? = null,
     //vym
     var deletionSuccess: Boolean = false,
-    var deletionError: Int? = null
+    var deletionError: Int? = null,
+    //order
+    var orderSuccess: Boolean = false,
+    var orderError: Int? = null
 )

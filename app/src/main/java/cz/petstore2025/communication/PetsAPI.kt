@@ -1,5 +1,6 @@
 package cz.petstore2025.communication
 
+import cz.petstore2025.model.ApiResponse
 import cz.petstore2025.model.Order
 import cz.petstore2025.model.Pet
 import okhttp3.MultipartBody
@@ -46,5 +47,12 @@ interface PetsAPI {
     suspend fun placeOrder(
         @Body order: Order
     ): Response<Order>
+
+    @Headers("Content-Type: application/json")
+    @GET("user/login")
+    suspend fun loginUser(
+        @Query("username") username: String,
+        @Query("password") password: String
+    ): Response<ApiResponse>
 
 }

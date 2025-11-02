@@ -1,6 +1,7 @@
 package cz.petstore2025.communication
 
 
+import cz.petstore2025.model.ApiResponse
 import cz.petstore2025.model.Order
 import cz.petstore2025.model.Pet
 import java.time.Instant
@@ -48,6 +49,12 @@ class PetsRemoteRepositoryImpl @Inject constructor(
 
         return processResponse {
             api.placeOrder(newOrder)
+        }
+    }
+
+    override suspend fun loginUser(username: String, password: String): CommunicationResult<ApiResponse> {
+        return processResponse {
+            api.loginUser(username, password)
         }
     }
 }

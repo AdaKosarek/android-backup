@@ -38,4 +38,9 @@
     <string name="add_failed_title">Adding failed</string>
     <string name="photo_required">Photo required</string>
     <string name="category_label">Category</string>
+    <string name="failed_to_order_pet">Failed to order pet</string>
+    <string name="order_failed">Order failed</string>
+    <string name="username">Username</string>
+    <string name="welcome_back">Sign in to your account</string>
+    <string name="login">Login</string>
 </resources>

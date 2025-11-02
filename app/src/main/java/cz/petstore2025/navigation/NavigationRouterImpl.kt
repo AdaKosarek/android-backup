@@ -23,4 +23,10 @@ class NavigationRouterImpl(private val navController: NavController) : INavigati
     //pro reload
     override fun getCurrentSavedStateHandle(): SavedStateHandle? =
         navController.currentBackStackEntry?.savedStateHandle
+
+    override fun navigateToLogin() {
+        navController.navigate(Destination.LoginScreen.route) {
+            popUpTo(0) { inclusive = true }
+        }
+    }
 }
