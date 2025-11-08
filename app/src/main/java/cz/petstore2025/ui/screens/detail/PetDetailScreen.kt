@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -42,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -54,6 +56,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import cz.petstore2025.model.Pet
 import cz.petstore2025.navigation.INavigationRouter
 import cz.petstore2025.navigation.PetDetailDestination
@@ -259,35 +262,35 @@ fun PetDetailScreenContent(
                     .padding(16.dp)
             ) {
                 if (photos.isNotEmpty()) {
-                    val painter = rememberAsyncImagePainter(photos.first())
-                    val painterState = painter.state
-
-                    when (painterState) {
-                        is AsyncImagePainter.State.Success -> {
-                            Image(
-                                painter = painter,
-                                contentDescription = name,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(220.dp)
-                                    .clip(RoundedCornerShape(16.dp))
-                            )
-                        }
-                        is AsyncImagePainter.State.Error,
-                        is AsyncImagePainter.State.Empty -> {
-                            Image(
-                                painter = fallbackImage,
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(220.dp)
-                                    .clip(RoundedCornerShape(16.dp))
-                            )
-                        }
-                        is AsyncImagePainter.State.Loading -> TODO()
+                    val validPhotoUrl = photos.firstOrNull { url ->
+                        url.isNotBlank() &&
+                                url.lowercase() != "string" &&
+                                (url.startsWith("http://") || url.startsWith("https://"))
                     }
+
+                    val painter = if (validPhotoUrl != null) {
+                        rememberAsyncImagePainter(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(validPhotoUrl)
+                                .crossfade(true)
+                                .error(R.drawable.un_dog)
+                                .fallback(R.drawable.un_dog)
+                                .build()
+                        )
+                    } else {
+                        fallbackImage
+                    }
+
+                    Image(
+                        painter = painter,
+                        contentDescription = name,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(220.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                    )
                 } else {
                     Image(
                         painter = fallbackImage,
@@ -297,8 +300,10 @@ fun PetDetailScreenContent(
                             .fillMaxWidth()
                             .height(220.dp)
                             .clip(RoundedCornerShape(16.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
                     )
                 }
+
 
                 Spacer(modifier = Modifier.height(16.dp))
 

@@ -48,6 +48,8 @@ fun ListOfPetsScreen(
                     handle["refreshList"] = false
                 }
             }
+
+
         }
     }
     BaseScreen(
@@ -96,7 +98,9 @@ fun ListOfPetsScreenContent(
             items(petsList) { pet ->
                 PetRow(
                     pet = pet,
-                    onClick = { navigation.navigateToPetDetail(pet.id!!) }
+                    onClick = { pet.id?.let {
+                        navigation.navigateToPetDetail(it)
+                    } }
                 )
 
                 HorizontalDivider(
