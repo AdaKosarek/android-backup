@@ -1,10 +1,25 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.kotlin.serialization)
 }
 
+val properties = Properties()
+properties.load(project.rootProject.file("local.properties").reader())
+val server = properties.getProperty("server")
+
 android {
+    val versionMajor = 0
+    val versionMinor = 0
+    val versionPatch = 1
+    val myVersionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
+    val myVersionName = "${versionMajor}.${versionMinor}.${versionPatch}"
+
     namespace = "cz.mendelu.pef.fooddiary"
     compileSdk = 36
 
@@ -12,10 +27,11 @@ android {
         applicationId = "cz.mendelu.pef.fooddiary"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = myVersionCode
+        versionName = myVersionName
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        //testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "cz.mendelu.pef.fooddiary.MyHiltTestRunner"
     }
 
     buildTypes {
@@ -25,6 +41,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+
+        debug {
+            buildConfigField(type = "String", name = "SERVER_URL", value = server)
         }
     }
     compileOptions {
@@ -36,6 +56,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -49,6 +70,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -56,4 +78,47 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Navigation
+    implementation(libs.navigation.fragment)
+    implementation(libs.navigation.ui)
+    implementation(libs.navigation.compose)
+    implementation(libs.kotlin.serialization.json)
+
+    // Datastore
+    implementation(libs.datastore.core)
+    implementation(libs.datastore.preferences)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.compose)
+    ksp(libs.hilt.compiler.ksp)
+
+    // Moshi
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
+    ksp(libs.moshi.ksp)
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.moshi)
+    implementation(libs.retrofit.okhtt3)
+
+    // coil
+    implementation(libs.coil)
+
+    // Splashscreen
+    implementation(libs.splashscreen)
+
+    // Testing hilt
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.android.compiler)
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    // Room
+    implementation(libs.room.ktx)
+    implementation(libs.room.viewmodel)
+    implementation(libs.room.lifecycle)
+    implementation(libs.room.runtime)
+    ksp(libs.room.compiler.ksp)
 }

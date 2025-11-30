@@ -1,0 +1,28 @@
+package cz.mendelu.pef.fooddiary.database
+
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+
+class SavedMealsLocalRepositoryImpl @Inject constructor(private val dao: SavedMealsDao) : ISavedMealsLocalRepository {
+
+    override suspend fun insert(savedMeal: SavedMeal) {
+        return dao.insert(savedMeal)
+    }
+
+    override fun getAll(): Flow<List<SavedMeal>> {
+        return dao.getAll()
+    }
+
+    override suspend fun update(savedMeal: SavedMeal) {
+        dao.update(savedMeal)
+    }
+
+    override suspend fun delete(savedMeal: SavedMeal) {
+        dao.delete(savedMeal)
+    }
+
+    override suspend fun getById(localId: Long): SavedMeal {
+        return dao.getById(localId)
+    }
+
+}
