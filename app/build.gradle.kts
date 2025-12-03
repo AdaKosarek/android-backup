@@ -12,6 +12,7 @@ plugins {
 val properties = Properties()
 properties.load(project.rootProject.file("local.properties").reader())
 val server = properties.getProperty("server")
+val apiKey = properties.getProperty("API_KEY")
 
 android {
     val versionMajor = 0
@@ -45,6 +46,7 @@ android {
 
         debug {
             buildConfigField(type = "String", name = "SERVER_URL", value = server)
+            buildConfigField(type = "String", name = "API_KEY", value = apiKey)
         }
     }
     compileOptions {
