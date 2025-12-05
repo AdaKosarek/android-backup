@@ -11,7 +11,8 @@ import retrofit2.http.Query
 interface FoodsAPI {
     @GET("recipes/complexSearch")
     suspend fun getAllRecipes(
-        @Query("number") number: Int = 50
+        @Query("number") number: Int = 30,
+        @Query("addRecipeInformation") addRecipeInformation: Boolean = true
     ): Response<RecipesListResponse>
 
     @GET("recipes/{id}/information")

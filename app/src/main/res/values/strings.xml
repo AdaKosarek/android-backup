@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">FoodDiary</string>
     <string name="back">Back</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="failed_to_load_recipes">Failed to load recipes</string>
+    <string name="exception">Exception</string>
 </resources>

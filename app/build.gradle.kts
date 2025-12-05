@@ -123,4 +123,8 @@ dependencies {
     implementation(libs.room.lifecycle)
     implementation(libs.room.runtime)
     ksp(libs.room.compiler.ksp)
+
+    // Ikonky
+    implementation("androidx.compose.material:material-icons-extended")
+
 }
