@@ -32,7 +32,7 @@ class DiscoverViewModel @Inject constructor(
         viewModelScope.launch {
 
             val result = withContext(Dispatchers.IO) {
-                foodsRepository.getAllRecipes(2, type)
+                foodsRepository.getAllRecipes(20, type)
             }
 
             when (result) {
