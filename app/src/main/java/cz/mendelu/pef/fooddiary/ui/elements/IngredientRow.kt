@@ -23,9 +23,10 @@ import cz.mendelu.pef.fooddiary.ui.theme.GrayText
 import cz.mendelu.pef.fooddiary.ui.theme.basicMargin
 
 @Composable
-fun IngredientRow(ingredient: Ingredient) {
+fun IngredientRow(ingredient: Ingredient,
+                  modifier: Modifier = Modifier ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically

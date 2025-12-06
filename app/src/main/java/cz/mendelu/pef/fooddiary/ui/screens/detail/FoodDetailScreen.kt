@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -112,6 +113,7 @@ fun FoodDetailScreenContent(
             .fillMaxSize()
             .padding(bottom = paddingValues.calculateBottomPadding())
             .verticalScroll(rememberScrollState())
+            .testTag("TestTagDetailContainer")
     ) {
 
         if (recipe == null) {
@@ -144,6 +146,7 @@ fun FoodDetailScreenContent(
                             Color.White,
                             CircleShape
                         )
+                        .testTag("TestTagDetailBackButton")
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -161,6 +164,7 @@ fun FoodDetailScreenContent(
                             Color.White,
                             shape = CircleShape
                         )
+                        .testTag("TestTagDetailFavorite")
                 ) {
                     Icon(
                         imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
@@ -178,7 +182,8 @@ fun FoodDetailScreenContent(
 
                 Text(
                     text = recipe.title ?: "Food",
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.testTag("TestTagDetailTitle")
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -217,7 +222,9 @@ fun FoodDetailScreenContent(
                 )
                 Spacer(modifier = Modifier.height(12.dp))
 
-                NutritionSection(recipe)
+                Box(modifier = Modifier.testTag("TestTagDetailNutrition")) {
+                    NutritionSection(recipe)
+                }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -229,8 +236,12 @@ fun FoodDetailScreenContent(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                recipe.extendedIngredients?.forEach { ing ->
-                    IngredientRow(ingredient = ing)
+
+                Column(Modifier.testTag("TestTagDetailIngredientsList")) {
+                    recipe.extendedIngredients?.forEach { ing ->
+                        IngredientRow(ingredient = ing,
+                            modifier = Modifier.testTag("TestTagDetailIngredient"))
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -243,7 +254,9 @@ fun FoodDetailScreenContent(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                InstructionSection(recipe)
+                Box(modifier = Modifier.testTag("TestTagDetailInstruction")) {
+                    InstructionSection(recipe)
+                }
 
                 Spacer(modifier = Modifier.height(32.dp))
 

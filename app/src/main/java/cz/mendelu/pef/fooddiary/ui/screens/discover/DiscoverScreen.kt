@@ -42,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -161,7 +162,9 @@ fun DiscoverScreenContent(
             }
         } else {
             recipes?.let { list ->
-                LazyColumn {
+                LazyColumn(
+                    modifier = Modifier.testTag("TestTagDiscoverList")
+                ) {
                     items(list) { recipe ->
                         RecipeRow(
                             recipe = recipe,
@@ -191,6 +194,7 @@ fun RecipeRow(
     Card(
         modifier = Modifier
             .padding(horizontal = basicMargin(), vertical = halfMargin())
+            .testTag("TestTagDiscoverItem_${recipe.id}")
             .clickable { onClick() }
             .fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
