@@ -11,15 +11,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.AccessTime
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.People
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -38,7 +42,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
@@ -54,7 +57,7 @@ import cz.mendelu.pef.fooddiary.ui.elements.PlaceholderScreenContent
 import cz.mendelu.pef.fooddiary.ui.theme.ChipBackground
 import cz.mendelu.pef.fooddiary.ui.theme.GrayText
 import cz.mendelu.pef.fooddiary.ui.theme.OrangePrimary
-import cz.mendelu.pef.fooddiary.ui.theme.basicMargin
+import cz.mendelu.pef.fooddiary.ui.theme.halfMargin
 
 @Composable
 fun FoodDetailScreen(
@@ -69,8 +72,7 @@ fun FoodDetailScreen(
     }
 
     BaseScreen(
-        topBarText = null,
-        onBackClick = { navigation.returnBack() },
+        hideTopBar = true,
         showLoading = state.value.loading,
         placeholderScreenContent =
             state.value.error?.let {
@@ -80,11 +82,13 @@ fun FoodDetailScreen(
                     text = stringResource(id = it)
                 )
             }
-    ) { padding ->
+    ) { paddingValues ->
 
         FoodDetailScreenContent(
-            paddingValues = padding,
-            recipe = state.value.recipe
+            paddingValues = paddingValues,
+            recipe = state.value.recipe,
+            loading = state.value.loading,
+            onBackClick = { navigation.returnBack() }
         )
     }
 }
@@ -92,15 +96,22 @@ fun FoodDetailScreen(
 @Composable
 fun FoodDetailScreenContent(
     paddingValues: PaddingValues,
-    recipe: RecipeDetail?
+    recipe: RecipeDetail?,
+    loading: Boolean,
+    onBackClick: () -> Unit
 ) {
     var isFavorite by remember { mutableStateOf(false) }
+
+    if (loading) {
+        Box(modifier = Modifier.fillMaxSize()) {}
+        return
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(bottom = paddingValues.calculateBottomPadding())
             .verticalScroll(rememberScrollState())
-            .padding(paddingValues)
     ) {
 
         if (recipe == null) {
@@ -110,23 +121,41 @@ fun FoodDetailScreenContent(
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
-        } else{
+        } else {
             //foto
-            Box(modifier = Modifier.fillMaxWidth()) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .height(280.dp)
+            ) {
 
                 AsyncImage(
                     model = recipe.image ?: R.drawable.foods_common,
                     contentDescription = recipe.title,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(220.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     contentScale = ContentScale.Crop
                 )
-
+                //back
+                IconButton(
+                    onClick = onBackClick,
+                    modifier = Modifier
+                        .padding(start = 12.dp, top = 36.dp)
+                        .align(Alignment.TopStart)
+                        .background(
+                            Color.White,
+                            CircleShape
+                        )
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        tint = GrayText
+                    )
+                }
+                //srdce
                 IconButton(
                     onClick = { isFavorite = !isFavorite },
                     modifier = Modifier
-                        .padding(12.dp)
+                        .padding(end = 12.dp, top = 36.dp)
                         .align(Alignment.TopEnd)
                         .background(
                             Color.White,
@@ -141,102 +170,109 @@ fun FoodDetailScreenContent(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
 
-            Column(modifier = Modifier.padding(horizontal = basicMargin())) {
+            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+                //.padding(paddingValues)
+            ) {
+                Spacer(modifier = Modifier.height(8.dp))
+
                 Text(
-                    text = recipe.title ?: "",
+                    text = recipe.title ?: "Food",
                     style = MaterialTheme.typography.titleLarge
                 )
-            }
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-            //chips
-            Row(
-                modifier = Modifier.padding(horizontal = basicMargin()),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Icon(Icons.Outlined.AccessTime, contentDescription = null, tint = GrayText)
-                Text("${recipe.readyInMinutes ?: "-"} min", color = GrayText)
+                //chips
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Icon(Icons.Outlined.AccessTime, contentDescription = null, tint = GrayText)
+                    Text("${recipe.readyInMinutes ?: "-"} min", color = GrayText)
 
-                Icon(Icons.Outlined.Person, contentDescription = null, tint = GrayText)
-                Text("${recipe.servings ?: "-"} servings", color = GrayText)
+                    Icon(Icons.Outlined.People, contentDescription = null, tint = GrayText)
+                    Text("${recipe.servings ?: "-"} servings", color = GrayText)
 
-                recipe.dishTypes?.firstOrNull()?.let {
-                    Box(
-                        modifier = Modifier
-                            .background(ChipBackground, RoundedCornerShape(12.dp))
-                            .padding(horizontal = 12.dp, vertical = 6.dp)
-                    ) {
-                        Text(
-                            text = it.replaceFirstChar(Char::titlecase),
-                            color = GrayText,
-                            fontSize = 13.sp
-                        )
+                    recipe.dishTypes?.firstOrNull()?.let {
+                        Box(
+                            modifier = Modifier
+                                .background(ChipBackground, RoundedCornerShape(50))
+                                .padding(horizontal = 12.dp, vertical = 6.dp)
+                        ) {
+                            Text(
+                                text = it.replaceFirstChar(Char::titlecase),
+                                color = GrayText
+                            )
+                        }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                //nutritions
+                Text(
+                    text = stringResource(R.string.nutritional_values),
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                NutritionSection(recipe)
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                //ingredients
+                Text(
+                    text = stringResource(R.string.ingredients),
+                    style = MaterialTheme.typography.titleMedium,
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                recipe.extendedIngredients?.forEach { ing ->
+                    IngredientRow(ingredient = ing)
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                //instructions
+                Text(
+                    text = stringResource(R.string.preparation_instructions),
+                    style = MaterialTheme.typography.titleMedium,
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                InstructionSection(recipe)
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                //save
+                Button(
+                    onClick = {},
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(46.dp),
+                    shape = RoundedCornerShape(50),
+                    colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary)
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.BookmarkBorder,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(20.dp)
+                    )
+
+                    Spacer(modifier = Modifier.width(halfMargin()))
+
+                    Text(
+                        text = stringResource(R.string.save_food),
+                        color = Color.White
+                    )
+                }
+
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            //nutrition
-            Text(
-                text = stringResource(R.string.nutritional_values),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(horizontal = basicMargin())
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-
-            NutritionSection(recipe)
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            //ingredients
-            Text(
-                text = stringResource(R.string.ingredients),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(horizontal = basicMargin())
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            recipe.extendedIngredients?.forEach { ing ->
-                IngredientRow(ingredient = ing)
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            //instructions
-            Text(
-                text = stringResource(R.string.preparation_instructions),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(horizontal = basicMargin())
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            InstructionSection(recipe)
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            //save
-            Button(
-                onClick = {},
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = basicMargin())
-                    .height(52.dp),
-                shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary)
-            ) {
-                Text(stringResource(R.string.save_food), color = Color.White)
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
         }
-
     }
 }
 

@@ -6,6 +6,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import cz.mendelu.pef.fooddiary.ui.theme.OrangePrimary
 
 @Composable
 fun LoadingScreen(
@@ -13,8 +14,9 @@ fun LoadingScreen(
 ){
     Box(modifier = modifier.fillMaxSize()) {
         CircularProgressIndicator(
-            modifier = Modifier
-                .align(Alignment.Center)
+            color = OrangePrimary,
+            modifier = Modifier.align(Alignment.Center)
+
         )
     }
 }

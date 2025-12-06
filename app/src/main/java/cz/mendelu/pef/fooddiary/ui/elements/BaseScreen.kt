@@ -20,6 +20,7 @@ const val TestTagBackButton = "TestTagBackButton"
 fun BaseScreen(
     topBarText: String? = null,
     onBackClick: (() -> Unit)? = null,
+    hideTopBar: Boolean = false,
     placeholderScreenContent: PlaceholderScreenContent? = null,
     showLoading: Boolean = false,
     floatingActionButton: @Composable () -> Unit = {},
@@ -29,43 +30,46 @@ fun BaseScreen(
     Scaffold(
         floatingActionButton = floatingActionButton,
         topBar = {
-            TopAppBar(
-                title = {
-                    if (topBarText != null) {
-                        Text(
-                            text = topBarText,
-                            style = MaterialTheme.typography.titleLarge,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier
-                                .padding(start = 0.dp)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
-                actions = actions,
-                navigationIcon = {
-                    if (onBackClick != null) {
-                        IconButton(
-                            modifier = Modifier.testTag(TestTagBackButton),
-                            onClick = onBackClick) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = stringResource(R.string.back),
+            if (!hideTopBar) {
+                TopAppBar(
+                    title = {
+                        if (topBarText != null) {
+                            Text(
+                                text = topBarText,
+                                style = MaterialTheme.typography.titleLarge,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier
+                                    .padding(start = 0.dp)
                             )
                         }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+                    actions = actions,
+                    navigationIcon = {
+                        if (onBackClick != null) {
+                            IconButton(
+                                modifier = Modifier.testTag(TestTagBackButton),
+                                onClick = onBackClick
+                            ) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = stringResource(R.string.back),
+                                )
+                            }
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     ) {
         if (placeholderScreenContent != null) {
             PlaceHolderScreen(
                 content = placeholderScreenContent
             )
-        }/* else if (showLoading) {
+        } else if (showLoading) {
             LoadingScreen()
-        }*/else {
+        }else {
             content(it)
         }
     }

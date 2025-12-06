@@ -16,14 +16,28 @@ import cz.mendelu.pef.fooddiary.ui.theme.GrayText
 import cz.mendelu.pef.fooddiary.ui.theme.basicMargin
 
 @Composable
-fun NutrientBox(value: String, label: String, color: Color) {
+fun NutrientBox(
+    value: String,
+    label: String,
+    background: Color,
+    textColor: Color,
+    modifier: Modifier = Modifier
+) {
     Column(
-        modifier = Modifier
-            .background(color, RoundedCornerShape(12.dp))
-            .padding(horizontal = basicMargin(), vertical = 10.dp),
+        modifier = modifier
+            .background(background, RoundedCornerShape(16.dp))
+            .padding(vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(value, fontWeight = FontWeight.Bold)
-        Text(label, color = GrayText, fontSize = 13.sp)
+        Text(
+            text = value,
+            color = textColor,
+            fontSize = 18.sp
+        )
+        Text(
+            text = label,
+            color = GrayText,
+            fontSize = 13.sp
+        )
     }
 }

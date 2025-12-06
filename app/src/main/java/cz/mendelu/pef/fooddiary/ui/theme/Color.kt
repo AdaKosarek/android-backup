@@ -15,12 +15,19 @@ val Pink40 = Color(0xFF7D5260)
 val OrangePrimary = Color(0xFFDF8A00)
 val OrangeText= Color(0xFFB47203)
 
-//
-val OrangeLight =  Color(0xFFFFF0DD)
-val BlueLight   = Color(0xFFE3F2FD)
-val GreenLight  = Color(0xFFE6F4EA)
-val PinkLight   = Color(0xFFFFEBF0)
 
+//boxes
+val PinkLight = Color(0xFFFFF4EC)
+val PinkDark  = Color(0xFFEA6A00)
+
+val BlueLight = Color(0xFFF2F7FF)
+val BlueDark  = Color(0xFF3D7EEB)
+
+val GreenLight = Color(0xFFF1FFF4)
+val GreenDark  = Color(0xFF1FA84B)
+
+val OrangeLight = Color(0xFFFFF7E6)
+val OrangeDark  = Color(0xFFE29A00)
 
 
 
