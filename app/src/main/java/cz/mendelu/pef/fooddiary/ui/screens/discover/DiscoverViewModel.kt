@@ -23,44 +23,44 @@ class DiscoverViewModel @Inject constructor(
     val uiState: StateFlow<DiscoverScreenUIState> = _uiState
 
     init {
-        loadRecipes()
+        loadRecipes(type = null)
     }
 
-    private fun loadRecipes() {
+    fun loadRecipes(type: String?) {
+        _uiState.value = _uiState.value.copy(loading = true, error = null)
+
         viewModelScope.launch {
+
             val result = withContext(Dispatchers.IO) {
-                foodsRepository.getAllRecipes()
+                foodsRepository.getAllRecipes(10, type)
             }
 
             when (result) {
-                is CommunicationResult.ConnectionError -> {
-                    _uiState.value = _uiState.value.copy(
+                is CommunicationResult.ConnectionError -> _uiState.value =
+                    _uiState.value.copy(
                         loading = false,
                         error = DiscoverScreenError(R.string.no_internet_connection)
                     )
-                }
 
-                is CommunicationResult.Error -> {
-                    _uiState.value = _uiState.value.copy(
+                is CommunicationResult.Error -> _uiState.value =
+                    _uiState.value.copy(
                         loading = false,
                         error = DiscoverScreenError(R.string.failed_to_load_recipes)
                     )
-                }
 
-                is CommunicationResult.Exception -> {
-                    _uiState.value = _uiState.value.copy(
+                is CommunicationResult.Exception -> _uiState.value =
+                    _uiState.value.copy(
                         loading = false,
                         error = DiscoverScreenError(R.string.exception)
                     )
-                }
 
-                is CommunicationResult.Success -> {
-                    _uiState.value = _uiState.value.copy(
+                is CommunicationResult.Success -> _uiState.value =
+                    _uiState.value.copy(
                         loading = false,
                         recipes = result.data.results
                     )
-                }
             }
         }
     }
 }
+

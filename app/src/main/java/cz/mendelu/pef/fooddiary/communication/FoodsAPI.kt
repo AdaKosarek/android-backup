@@ -1,6 +1,6 @@
 package cz.mendelu.pef.fooddiary.communication
 
-import cz.mendelu.pef.fooddiary.model.ApiRecipe
+import cz.mendelu.pef.fooddiary.model.RecipeDetail
 import cz.mendelu.pef.fooddiary.model.RecipesListResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -12,6 +12,7 @@ interface FoodsAPI {
     @GET("recipes/complexSearch")
     suspend fun getAllRecipes(
         @Query("number") number: Int = 30,
+        @Query("type") type: String? = null,
         @Query("addRecipeInformation") addRecipeInformation: Boolean = true
     ): Response<RecipesListResponse>
 
@@ -19,5 +20,5 @@ interface FoodsAPI {
     suspend fun getRecipeById(
         @Path("id") recipeId: Long,
         @Query("includeNutrition") includeNutrition: Boolean = true
-    ): Response<ApiRecipe>
+    ): Response<RecipeDetail>
 }

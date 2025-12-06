@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,16 +26,19 @@ import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -66,10 +70,24 @@ fun DiscoverScreen(
     viewModel: DiscoverViewModel = hiltViewModel()
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
+    var selectedCategory by remember { mutableStateOf("All") }
+
+    val categoryToApi = mapOf(
+        "All" to null,
+        "Main dish" to "main dish",
+        "Soup" to "soup",
+        "Desert" to "dessert",
+        "Side dish" to "side dish"
+    )
+
+    //kdyz se zmeni type jidla
+    LaunchedEffect(selectedCategory) {
+        viewModel.loadRecipes(categoryToApi[selectedCategory])
+    }
 
     BaseScreen(
         topBarText = "Discover",
-        showLoading = state.value.loading,
+        showLoading = false,
         placeholderScreenContent = if (state.value.error != null) {
             PlaceholderScreenContent(
                 image = null,
@@ -79,10 +97,14 @@ fun DiscoverScreen(
         } else null,
         floatingActionButton = {}
     ) { padding ->
+
         DiscoverScreenContent(
             paddingValues = padding,
             navigation = navigation,
-            recipes = state.value.recipes
+            selectedCategory = selectedCategory,
+            onCategorySelected = { selectedCategory = it },
+            recipes = state.value.recipes,
+            loading = state.value.loading
         )
     }
 }
@@ -91,20 +113,60 @@ fun DiscoverScreen(
 fun DiscoverScreenContent(
     paddingValues: PaddingValues,
     navigation: INavigationRouter,
-    recipes: List<DiscoverRecipeItem>? = null
+    selectedCategory: String,
+    onCategorySelected: (String) -> Unit,
+    recipes: List<DiscoverRecipeItem>? = null,
+    loading: Boolean
 ) {
-    Box(
+    val categoryNames = listOf("All", "Main Dish", "Soup", "Desert", "Side dish")
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(ScreenBackground)
+            //.background(ScreenBackground)
+            .padding(paddingValues)
     ) {
-        recipes?.let { list ->
-            LazyColumn(
-                contentPadding = paddingValues
+
+        //kategorie
+        LazyRow(
+            modifier = Modifier.padding(horizontal = basicMargin(), vertical = halfMargin()),
+            horizontalArrangement = Arrangement.spacedBy(halfMargin())
+        ) {
+            items(categoryNames) { category ->
+                val isSelected = category == selectedCategory
+
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(if (isSelected) OrangePrimary else ChipBackground)
+                        .clickable { onCategorySelected(category) }
+                        .padding(horizontal = 20.dp,
+                            vertical = 10.dp)
+                ) {
+                    Text(
+                        text = category,
+                        color = if (isSelected) Color.White else GrayText
+                    )
+                }
+            }
+        }
+
+        if (loading) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
-                items(list) { recipe ->
-                    RecipeRow(recipe = recipe) {
-                        navigation.navigateToFoodDetail(recipe.id)
+                CircularProgressIndicator(color = OrangePrimary)
+            }
+        } else {
+            recipes?.let { list ->
+                LazyColumn {
+                    items(list) { recipe ->
+                        RecipeRow(
+                            recipe = recipe,
+                            selectedCategory = selectedCategory,
+                            onClick = { navigation.navigateToFoodDetail(recipe.id!!) }
+                        )
                     }
                 }
             }
@@ -112,14 +174,16 @@ fun DiscoverScreenContent(
     }
 }
 
+
 @Composable
 fun RecipeRow(
     recipe: DiscoverRecipeItem,
+    selectedCategory: String,
     onClick: () -> Unit
 ) {
     var isFavorite by remember { mutableStateOf(false) }
     val servings = recipe.servings
-    val dishType = recipe.dishTypes?.firstOrNull()?.replaceFirstChar(Char::titlecase) ?: "Food"
+    val dishType = if (selectedCategory != "All") selectedCategory else recipe.dishTypes?.firstOrNull()?.replaceFirstChar(Char::titlecase) ?: "Food"
     val time = recipe.readyInMinutes ?: "Unkn"
     val imageUrl = recipe.image ?: R.drawable.foods_common
 
@@ -182,7 +246,7 @@ fun RecipeRow(
                     //typ jidla
                     Box(
                         modifier = Modifier
-                            .background(ChipBackground, RoundedCornerShape(12.dp))
+                            .background(ChipBackground, RoundedCornerShape(20.dp))
                             .padding(horizontal = 12.dp, vertical = 6.dp)
                     ) {
                         Text(
@@ -213,7 +277,7 @@ fun RecipeRow(
                     if (servings != null) {
                         Box(
                             modifier = Modifier
-                                .background(OrangeLight, RoundedCornerShape(12.dp))
+                                .background(OrangeLight, RoundedCornerShape(20.dp))
                                 .padding(horizontal = 12.dp, vertical = 6.dp)
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {

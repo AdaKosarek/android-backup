@@ -63,9 +63,9 @@ fun BaseScreen(
             PlaceHolderScreen(
                 content = placeholderScreenContent
             )
-        } else if (showLoading) {
+        }/* else if (showLoading) {
             LoadingScreen()
-        } else {
+        }*/else {
             content(it)
         }
     }

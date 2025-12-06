@@ -13,8 +13,16 @@ val Pink40 = Color(0xFF7D5260)
 
 //Primary app brand
 val OrangePrimary = Color(0xFFDF8A00)
-val OrangeText= Color(0xFF9F6702)
-val OrangeLight =  Color(0xFFFFF1DD)
+val OrangeText= Color(0xFFB47203)
+
+//
+val OrangeLight =  Color(0xFFFFF0DD)
+val BlueLight   = Color(0xFFE3F2FD)
+val GreenLight  = Color(0xFFE6F4EA)
+val PinkLight   = Color(0xFFFFEBF0)
+
+
+
 
 //UI neutrals
 val CardBackground = Color(0xFFFFFFFF)
