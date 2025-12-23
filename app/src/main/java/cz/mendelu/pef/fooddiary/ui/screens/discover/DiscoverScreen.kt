@@ -24,7 +24,6 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.People
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -53,6 +52,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import cz.mendelu.pef.fooddiary.R
 import cz.mendelu.pef.fooddiary.model.DiscoverRecipeItem
+import cz.mendelu.pef.fooddiary.navigation.Destination
 import cz.mendelu.pef.fooddiary.navigation.INavigationRouter
 import cz.mendelu.pef.fooddiary.ui.elements.BaseScreen
 import cz.mendelu.pef.fooddiary.ui.elements.PlaceholderScreenContent
@@ -89,6 +89,8 @@ fun DiscoverScreen(
 
     BaseScreen(
         topBarText = "Discover",
+        currentDestination = Destination.DiscoverScreen,
+        onBottomNavClick = { navigation.navigateTo(it) },
         showLoading = false,
         placeholderScreenContent = if (state.value.error != null) {
             PlaceholderScreenContent(
@@ -97,7 +99,6 @@ fun DiscoverScreen(
                 text = stringResource(state.value.error!!.communicationError)
             )
         } else null,
-        floatingActionButton = {}
     ) { padding ->
 
         DiscoverScreenContent(

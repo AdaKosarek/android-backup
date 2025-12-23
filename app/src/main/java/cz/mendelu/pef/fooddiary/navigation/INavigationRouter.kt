@@ -2,7 +2,7 @@ package cz.mendelu.pef.fooddiary.navigation
 import androidx.navigation.NavController
 
 interface INavigationRouter {
-    fun getNavController(): NavController
+    fun navigateTo(destination: Destination)
     fun returnBack()
     fun navigateToFoodDetail(foodId: Long)
 }

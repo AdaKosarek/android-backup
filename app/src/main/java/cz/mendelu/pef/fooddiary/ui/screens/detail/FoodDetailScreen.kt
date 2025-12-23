@@ -48,7 +48,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import cz.mendelu.pef.fooddiary.R
 import cz.mendelu.pef.fooddiary.model.RecipeDetail
-import cz.mendelu.pef.fooddiary.navigation.FoodDetailDestination
+import cz.mendelu.pef.fooddiary.navigation.Destination
 import cz.mendelu.pef.fooddiary.navigation.INavigationRouter
 import cz.mendelu.pef.fooddiary.ui.elements.BaseScreen
 import cz.mendelu.pef.fooddiary.ui.elements.IngredientRow
@@ -63,17 +63,19 @@ import cz.mendelu.pef.fooddiary.ui.theme.halfMargin
 @Composable
 fun FoodDetailScreen(
     navigation: INavigationRouter,
-    destination: FoodDetailDestination,
+    foodId: Long,
     viewModel: FoodDetailViewModel = hiltViewModel()
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(destination) {
-        viewModel.loadRecipe(destination.foodId)
+    LaunchedEffect(foodId) {
+        viewModel.loadRecipe(foodId)
     }
 
     BaseScreen(
         hideTopBar = true,
+        currentDestination = Destination.FoodDetailScreen,
+        onBottomNavClick = { navigation.navigateTo(it) },
         showLoading = state.value.loading,
         placeholderScreenContent =
             state.value.error?.let {

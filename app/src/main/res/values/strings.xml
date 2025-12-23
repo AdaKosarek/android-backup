@@ -9,4 +9,8 @@
     <string name="ingredients">Ingredients</string>
     <string name="save_food">Save food</string>
     <string name="preparation_instructions">Preparation instructions</string>
+    <string name="nav_discover">Discover</string>
+    <string name="nav_saved">Saved</string>
+    <string name="nav_map">Map</string>
+    <string name="nav_settings">Settings</string>
 </resources>

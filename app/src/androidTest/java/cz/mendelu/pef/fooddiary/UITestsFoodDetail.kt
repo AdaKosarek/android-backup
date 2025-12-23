@@ -15,7 +15,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import cz.mendelu.pef.fooddiary.mock.ServerMock
 import cz.mendelu.pef.fooddiary.navigation.Destination
-import cz.mendelu.pef.fooddiary.navigation.FoodDetailDestination
 import cz.mendelu.pef.fooddiary.navigation.NavGraph
 import cz.mendelu.pef.fooddiary.ui.activities.MainActivity
 import cz.mendelu.pef.fooddiary.ui.theme.FoodDiaryTheme

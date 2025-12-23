@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cz.mendelu.pef.fooddiary.R
+import cz.mendelu.pef.fooddiary.navigation.Destination
 
 const val TestTagBackButton = "TestTagBackButton"
 
@@ -19,6 +20,8 @@ const val TestTagBackButton = "TestTagBackButton"
 @Composable
 fun BaseScreen(
     topBarText: String? = null,
+    currentDestination: Destination,
+    onBottomNavClick: (Destination) -> Unit,
     onBackClick: (() -> Unit)? = null,
     hideTopBar: Boolean = false,
     placeholderScreenContent: PlaceholderScreenContent? = null,
@@ -61,17 +64,28 @@ fun BaseScreen(
                     }
                 )
             }
-        }
-    ) {
-        if (placeholderScreenContent != null) {
-            PlaceHolderScreen(
-                content = placeholderScreenContent
+        },
+
+        bottomBar = {
+            BottomNavigationBar(
+                currentDestination = currentDestination,
+                onItemClick = onBottomNavClick
             )
-        } else if (showLoading) {
-            LoadingScreen()
-        }else {
-            content(it)
+        }
+    ) { paddingValues ->
+
+        when {
+            placeholderScreenContent != null -> {
+                PlaceHolderScreen(content = placeholderScreenContent)
+            }
+
+            showLoading -> {
+                LoadingScreen()
+            }
+
+            else -> {
+                content(paddingValues)
+            }
         }
     }
-
 }
