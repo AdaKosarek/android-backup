@@ -13,7 +13,7 @@ interface SavedMealsDao {
     @Insert
     suspend fun insert(savedMeal: SavedMeal)
 
-    @Query("SELECT * FROM saved_meals")
+    @Query("SELECT * FROM saved_meals ORDER BY savedTimestamp DESC")
     fun getAll(): Flow<List<SavedMeal>>
 
     @Query("SELECT * FROM saved_meals WHERE localId = :localId")

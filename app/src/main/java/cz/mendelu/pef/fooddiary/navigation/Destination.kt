@@ -10,4 +10,5 @@ sealed class Destination(
 
 
     object FoodDetailScreen : Destination("food_detail")
+    object AddOptionScreen : Destination("add_option")
 }

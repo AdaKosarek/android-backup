@@ -13,4 +13,13 @@
     <string name="nav_saved">Saved</string>
     <string name="nav_map">Map</string>
     <string name="nav_settings">Settings</string>
+    <string name="saved_empty_text">No saved meals yet.</string>
+    <string name="saved_empty_title">No meals.</string>
+    <string name="has_location">Has location.</string>
+    <string name="add_option_title">Select add option</string>
+    <string name="add_option_subtitle">Choose the way how to add meal:</string>
+    <string name="add_option_take_picture_title">Take or choose the picture</string>
+    <string name="add_option_take_picture_desc">Use the camera or select an existing image from the gallery to find similar meal.</string>
+    <string name="add_option_search_recipe_title">Search food recipe</string>
+    <string name="add_option_search_recipe_desc">Find a meal in our database by name.</string>
 </resources>

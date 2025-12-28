@@ -1,6 +1,7 @@
 package cz.mendelu.pef.fooddiary.ui.elements
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.outlined.BookmarkBorder
@@ -14,6 +15,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -52,8 +54,11 @@ fun BottomNavigationBar(
 
                 val selected = when (destination) {
                     Destination.DiscoverScreen ->
-                        currentDestination == Destination.DiscoverScreen ||
-                                currentDestination == Destination.FoodDetailScreen
+                        currentDestination == Destination.DiscoverScreen || currentDestination == Destination.FoodDetailScreen
+
+                    Destination.SavedScreen ->
+                        currentDestination == Destination.SavedScreen || currentDestination == Destination.AddOptionScreen
+
                     else -> destination.route == currentDestination.route
                 }
 
@@ -77,7 +82,8 @@ fun BottomNavigationBar(
                                 Destination.SettingsScreen -> Icons.Outlined.Settings
                                 else -> Icons.Default.Info
                             },
-                            contentDescription = destination.route
+                            contentDescription = destination.route,
+                            modifier = Modifier.size(28.dp)
                         )
                     },
                     label = {

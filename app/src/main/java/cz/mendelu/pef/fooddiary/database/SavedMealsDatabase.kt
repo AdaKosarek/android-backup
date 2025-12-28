@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
 @Database(entities = [SavedMeal::class], version = 1, exportSchema = true)
+@TypeConverters(Converters::class)
 abstract class SavedMealsDatabase : RoomDatabase() {
 
     abstract fun savedMealsDao(): SavedMealsDao
@@ -27,7 +29,5 @@ abstract class SavedMealsDatabase : RoomDatabase() {
             }
             return INSTANCE!!
         }
-
-
     }
 }

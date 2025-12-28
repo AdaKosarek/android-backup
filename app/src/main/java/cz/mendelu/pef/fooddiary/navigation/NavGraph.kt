@@ -9,8 +9,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import cz.mendelu.pef.fooddiary.ui.screens.addoption.AddOptionScreen
 import cz.mendelu.pef.fooddiary.ui.screens.detail.FoodDetailScreen
 import cz.mendelu.pef.fooddiary.ui.screens.discover.DiscoverScreen
+import cz.mendelu.pef.fooddiary.ui.screens.saved.SavedScreen
 
 
 @Composable
@@ -38,6 +40,14 @@ fun NavGraph(
         ) {
             val foodId = it.arguments?.getLong("foodId") ?: -1L
             FoodDetailScreen(navigation, foodId)
+        }
+
+        composable(Destination.SavedScreen.route) {
+            SavedScreen(navigation)
+        }
+
+        composable(Destination.AddOptionScreen.route) {
+            AddOptionScreen(navigation)
         }
     }
 }

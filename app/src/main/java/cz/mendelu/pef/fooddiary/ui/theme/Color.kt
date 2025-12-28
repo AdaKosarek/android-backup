@@ -36,3 +36,8 @@ val CardBackground = Color(0xFFFFFFFF)
 val ScreenBackground = Color(0xFFF7F7F7)
 val ChipBackground = Color(0xFFF3F3F3)
 val GrayText = Color(0xFF4b4b4b)
+
+val OrangeLightTile =  Color(0xFFFCF3E7)
+val OrangeLightTileBorder = Color(0xFFEEBE6C)
+val BlueLightTile = Color(0xFFDFE7F6)
+val BlueLightTileBorder = Color(0xFF628EEC)
