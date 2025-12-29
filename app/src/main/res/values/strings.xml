@@ -33,4 +33,8 @@
     <string name="place_optional">Place (optional)</string>
     <string name="custom_name">Custom name</string>
     <string name="save">Save</string>
+    <string name="suggestions">Suggestions</string>
+    <string name="take_photo_hint">Take a photo</string>
+    <string name="cam_permission">To use the camera enable the Camera permission.</string>
+    <string name="food_not_recognized">Meal was not recognized.</string>
 </resources>

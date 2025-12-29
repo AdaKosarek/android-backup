@@ -99,6 +99,7 @@ class AddMealFormViewModel @Inject constructor(
             source = if (recipe != null) SavedMealSource.API_PLUS_FAB  else SavedMealSource.FAB,
             apiId = recipe?.id,
             title = recipe?.title,
+            apiImage = recipe?.image,
             readyInMinutes = recipe?.readyInMinutes,
             servings = recipe?.servings,
             dishTypes = recipe?.dishTypes,

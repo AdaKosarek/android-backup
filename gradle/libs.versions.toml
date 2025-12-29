@@ -35,6 +35,11 @@ androidxJunit = "1.1.5"
 espressoCoreVersion = "3.5.1"
 uiTestJunit4 = "1.9.4"
 
+tflite = "2.3.0"
+imageLabelingCustomCommon = "17.0.0"
+camerax-version = "1.4.0"
+play-services-location = "21.3.0"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -98,6 +103,14 @@ androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "uiTestJunit4" }
+
+image-labeling-custom = { group = "com.google.mlkit", name = "image-labeling-custom", version.ref = "imageLabelingCustomCommon" }
+tflite = { group = "org.tensorflow", name = "tensorflow-lite", version.ref = "tflite" }
+camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "camerax-version" }
+camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version.ref = "camerax-version" }
+camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "camerax-version" }
+camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "camerax-version" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "play-services-location"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

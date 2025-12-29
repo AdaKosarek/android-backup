@@ -1,10 +1,9 @@
 package cz.mendelu.pef.fooddiary.ui.screens.search
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,7 +25,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,6 +44,7 @@ import cz.mendelu.pef.fooddiary.model.DiscoverRecipeItem
 import cz.mendelu.pef.fooddiary.navigation.Destination
 import cz.mendelu.pef.fooddiary.navigation.INavigationRouter
 import cz.mendelu.pef.fooddiary.ui.elements.BaseScreen
+import cz.mendelu.pef.fooddiary.ui.elements.FoodCameraSection
 import cz.mendelu.pef.fooddiary.ui.elements.PlaceholderScreenContent
 import cz.mendelu.pef.fooddiary.ui.theme.BlueLightTile
 import cz.mendelu.pef.fooddiary.ui.theme.CardBackground
@@ -82,7 +81,8 @@ fun SearchScreen(
             onQueryChange = viewModel::onQueryChange,
             onSelectRecipe = viewModel::selectRecipe,
             onSelectNone = viewModel::selectNone,
-            navigation = navigation
+            navigation = navigation,
+            viewModel = viewModel
         )
     }
 }
@@ -94,98 +94,109 @@ fun SearchScreenContent(
     onQueryChange: (String) -> Unit,
     onSelectRecipe: (DiscoverRecipeItem) -> Unit,
     onSelectNone: () -> Unit,
-    navigation: INavigationRouter
+    navigation: INavigationRouter,
+    viewModel: SearchViewModel
 ) {
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
-            .padding(horizontal = basicMargin())
+            .padding(horizontal = basicMargin()),
+        verticalArrangement = Arrangement.spacedBy(halfMargin())
     ) {
 
-        Spacer(modifier = Modifier.height(halfMargin()))
+        item {
+            FoodCameraSection(
+                viewModel = viewModel,
+                state = state
+            )
+        }
 
-        OutlinedTextField(
-            value = state.query,
-            onValueChange = onQueryChange,
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = {
-                Text(stringResource(R.string.search_food_hint))
-            },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Outlined.Search,
-                    contentDescription = null
-                )
-            },
-            singleLine = true,
-            shape = RoundedCornerShape(20.dp)
-        )
 
-        Spacer(modifier = Modifier.height(halfMargin()))
+        item {
+            Text(text = stringResource(R.string.suggestions))
+        }
 
-        SearchNoneRow(
-            selected = state.selectedRecipe == null,
-            onClick = onSelectNone
-        )
+        item {
+            OutlinedTextField(
+                value = state.query,
+                onValueChange = onQueryChange,
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text(stringResource(R.string.search_food_hint)) },
+                leadingIcon = {
+                    Icon(Icons.Outlined.Search, contentDescription = null)
+                },
+                singleLine = true,
+                shape = RoundedCornerShape(20.dp)
+            )
+        }
 
-        Spacer(modifier = Modifier.height(halfMargin()))
+        item {
+            SearchNoneRow(
+                selected = state.selectedRecipe == null,
+                onClick = onSelectNone
+            )
+        }
 
         when {
             state.loading -> {
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(color = OrangePrimary)
-                }
-            }
-
-            state.recipes != null -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth()
-                ) {
-                    items(state.recipes) { recipe ->
-                        SearchRecipeRow(
-                            recipe = recipe,
-                            selected = state.selectedRecipe?.id == recipe.id,
-                            onClick = { onSelectRecipe(recipe) }
-                        )
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = basicMargin()),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = OrangePrimary)
                     }
                 }
             }
 
-            else -> {
-                Spacer(modifier = Modifier.weight(1f))
+            state.recipes != null -> {
+                items(state.recipes) { recipe ->
+                    SearchRecipeRow(
+                        recipe = recipe,
+                        selected = state.selectedRecipe?.id == recipe.id,
+                        onClick = { onSelectRecipe(recipe) }
+                    )
+                }
+            }
+
+            state.error != null -> {
+                item {
+                    Text(
+                        text = stringResource(state.error.communicationError),
+                        color = GrayText,
+                        modifier = Modifier.padding(vertical = basicMargin())
+                    )
+                }
             }
         }
-        Spacer(modifier = Modifier.height(basicMargin()))
 
-        Button(
-            onClick = {
-                navigation.navigateToAddMealForm(
-                    state.selectedRecipe?.id
-                )
-            },
-            enabled = state.recipes != null || state.selectedRecipe == null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            shape = RoundedCornerShape(24.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = OrangePrimary
-            )
-        ) {
-            Text(stringResource(R.string.next), color = Color.White)
+        item {
+            Button(
+                onClick = {
+                    navigation.navigateToAddMealForm(
+                        state.selectedRecipe?.id
+                    )
+                },
+                enabled = state.recipes != null || state.selectedRecipe == null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                shape = RoundedCornerShape(24.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary)
+            ) {
+                Text(stringResource(R.string.next), color = Color.White)
+            }
         }
 
-        Spacer(modifier = Modifier.height(basicMargin()))
+        item {
+            Spacer(modifier = Modifier.height(basicMargin()))
+        }
     }
 }
+
 
 @Composable
 fun SearchRecipeRow(
@@ -269,8 +280,7 @@ fun SearchNoneRow(
             Spacer(modifier = Modifier.width(basicMargin()))
 
             Text(
-                text = stringResource(R.string.search_none),
-                color = GrayText,
+                text = stringResource(R.string.search_none)
             )
 
         }

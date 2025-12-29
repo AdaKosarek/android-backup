@@ -79,7 +79,7 @@ fun SavedScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navigation.navigateTo(Destination.AddOptionScreen)
+                    navigation.navigateTo(Destination.SearchScreen)
                 },
                 containerColor = OrangePrimary
             ) {
@@ -113,10 +113,15 @@ fun SavedMealRow(
     meal: SavedMeal
 ) {
     val isApiOnly = meal.source == SavedMealSource.API_ONLY
+
     val matrix = ColorMatrix().apply {
         setToSaturation(if (isApiOnly) 0f else 1f)
     }
 
+    val imageModel =
+        meal.userPhotoUri
+            ?: meal.apiImage
+            ?: R.drawable.foods_common
 
     Card(
         modifier = Modifier
@@ -130,9 +135,8 @@ fun SavedMealRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            //image
             AsyncImage(
-                model = meal.userPhotoUri,
+                model = imageModel,
                 contentDescription = meal.title,
                 modifier = Modifier
                     .size(64.dp)
@@ -170,3 +174,4 @@ fun SavedMealRow(
         }
     }
 }
+

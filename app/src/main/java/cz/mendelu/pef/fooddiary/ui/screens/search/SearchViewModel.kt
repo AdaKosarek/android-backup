@@ -6,6 +6,7 @@ import cz.mendelu.pef.fooddiary.R
 import cz.mendelu.pef.fooddiary.communication.CommunicationResult
 import cz.mendelu.pef.fooddiary.communication.IFoodsRemoteRepository
 import cz.mendelu.pef.fooddiary.model.DiscoverRecipeItem
+import cz.mendelu.pef.fooddiary.model.SearchMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -79,6 +80,45 @@ class SearchViewModel @Inject constructor(
             }
         }
     }
+
+    fun onFoodDetected(label: String?, confidence: Float?) {
+        if (label == null) {
+            _uiState.value = _uiState.value.copy(
+                cameraMessage = R.string.food_not_recognized,
+                loading = false,
+                recipes = null
+            )
+            return
+        }
+
+        _uiState.value = _uiState.value.copy(
+            query = label,
+            loading = true,
+            cameraMessage = null,
+            mode = SearchMode.PHOTO
+        )
+
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                foodsRepository.searchRecipes(label)
+            }
+
+            when (result) {
+                is CommunicationResult.Success ->
+                    _uiState.value = _uiState.value.copy(
+                        loading = false,
+                        recipes = result.data.results
+                    )
+                else ->
+                    _uiState.value = _uiState.value.copy(
+                        loading = false,
+                        cameraMessage = R.string.failed_to_load_recipes
+                    )
+            }
+        }
+    }
+
+
 
     fun selectRecipe(recipe: DiscoverRecipeItem) {
         _uiState.value = _uiState.value.copy(

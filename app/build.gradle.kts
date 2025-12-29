@@ -35,6 +35,10 @@ android {
         testInstrumentationRunner = "cz.mendelu.pef.fooddiary.MyHiltTestRunner"
     }
 
+    androidResources {
+        noCompress("tflite")
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -59,6 +63,9 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+    aaptOptions {
+        noCompress += "tflite"
     }
 }
 
@@ -137,6 +144,12 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     testImplementation(kotlin("test"))
 
-
+    // ML
+    implementation(libs.image.labeling.custom)
+    implementation(libs.camera.core)
+    implementation(libs.camera.view)
+    implementation(libs.camera.camera2)
+    implementation(libs.camera.lifecycle)
+    implementation(libs.tflite)
 }
 

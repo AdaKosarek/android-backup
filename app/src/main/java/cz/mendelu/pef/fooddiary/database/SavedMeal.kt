@@ -17,6 +17,7 @@ data class SavedMeal(
     //pokud mame navic recept
     val apiId: Long? = null,
     val title: String?,
+    val apiImage: String?,
     val readyInMinutes: Int?,
     val servings: Int?,
     val dishTypes: List<String>?,

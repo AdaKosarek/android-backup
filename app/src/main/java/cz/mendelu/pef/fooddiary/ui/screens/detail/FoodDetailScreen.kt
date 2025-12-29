@@ -129,7 +129,7 @@ fun FoodDetailScreenContent(
             //foto
             Box(modifier = Modifier
                 .fillMaxWidth()
-                .height(280.dp)
+                .height(260.dp)
             ) {
 
                 AsyncImage(

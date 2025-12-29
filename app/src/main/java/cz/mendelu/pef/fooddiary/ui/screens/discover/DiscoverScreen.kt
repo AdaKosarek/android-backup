@@ -210,7 +210,7 @@ fun RecipeRow(
                     contentDescription = recipe.title,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp),
+                        .height(180.dp),
                     contentScale = ContentScale.Crop
                 )
 
