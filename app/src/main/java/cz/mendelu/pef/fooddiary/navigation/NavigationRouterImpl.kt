@@ -37,6 +37,17 @@ class NavigationRouterImpl(
         )
     }
 
+    override fun navigateToAddMealForm(apiId: Long?) {
+        val route = if (apiId == null) {
+            "${Destination.AddMealFormScreen.route}/-1"
+        } else {
+            "${Destination.AddMealFormScreen.route}/$apiId"
+        }
+
+        navController.navigate(route)
+    }
+
+
     override fun returnBack() {
         navController.popBackStack()
     }

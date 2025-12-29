@@ -7,4 +7,5 @@ import cz.mendelu.pef.fooddiary.model.RecipesListResponse
 interface IFoodsRemoteRepository : IBaseRemoteRepository {
     suspend fun getAllRecipes(count: Int = 50, type: String? = null): CommunicationResult<RecipesListResponse>
     suspend fun getRecipeById(id: Long): CommunicationResult<RecipeDetail>
+    suspend fun searchRecipes(query: String): CommunicationResult<RecipesListResponse>
 }

@@ -22,4 +22,15 @@
     <string name="add_option_take_picture_desc">Use the camera or select an existing image from the gallery to find similar meal.</string>
     <string name="add_option_search_recipe_title">Search food recipe</string>
     <string name="add_option_search_recipe_desc">Find a meal in our database by name.</string>
+    <string name="search_food">Search recipe</string>
+    <string name="search_food_hint">\"Pasta\"</string>
+    <string name="next">Next</string>
+    <string name="search_none">Continue without selecting recipe</string>
+    <string name="custom_name_required">Custom name is required</string>
+    <string name="add_meal">Add meal</string>
+    <string name="add_photo_optional">Add photo (optional)</string>
+    <string name="note_optional">Note (optional)</string>
+    <string name="place_optional">Place (optional)</string>
+    <string name="custom_name">Custom name</string>
+    <string name="save">Save</string>
 </resources>

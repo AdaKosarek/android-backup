@@ -93,7 +93,7 @@ fun AddOptionScreen(
                 title = stringResource(R.string.add_option_search_recipe_title),
                 subtitle = stringResource(R.string.add_option_search_recipe_desc),
                 onClick = {
-                    // TODO: navigate to recipe search
+                    navigation.navigateTo(Destination.SearchScreen)
                 }
             )
         }

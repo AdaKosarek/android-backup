@@ -21,4 +21,10 @@ interface FoodsAPI {
         @Path("id") recipeId: Long,
         @Query("includeNutrition") includeNutrition: Boolean = true
     ): Response<RecipeDetail>
+
+    @GET("recipes/complexSearch")
+    suspend fun searchRecipes(
+        @Query("query") query: String,
+        @Query("number") number: Int = 2
+    ): Response<RecipesListResponse>
 }

@@ -62,7 +62,6 @@ import cz.mendelu.pef.fooddiary.ui.theme.GrayText
 import cz.mendelu.pef.fooddiary.ui.theme.OrangeLight
 import cz.mendelu.pef.fooddiary.ui.theme.OrangePrimary
 import cz.mendelu.pef.fooddiary.ui.theme.OrangeText
-import cz.mendelu.pef.fooddiary.ui.theme.ScreenBackground
 import cz.mendelu.pef.fooddiary.ui.theme.basicMargin
 import cz.mendelu.pef.fooddiary.ui.theme.halfMargin
 

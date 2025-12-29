@@ -57,7 +57,7 @@ fun BottomNavigationBar(
                         currentDestination == Destination.DiscoverScreen || currentDestination == Destination.FoodDetailScreen
 
                     Destination.SavedScreen ->
-                        currentDestination == Destination.SavedScreen || currentDestination == Destination.AddOptionScreen
+                        currentDestination == Destination.SavedScreen || currentDestination == Destination.AddOptionScreen || currentDestination == Destination.SearchScreen || currentDestination == Destination.AddMealFormScreen
 
                     else -> destination.route == currentDestination.route
                 }

@@ -21,5 +21,10 @@ class FoodsRemoteRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun searchRecipes(query: String): CommunicationResult<RecipesListResponse> {
+        return processResponse {
+            api.searchRecipes(query = query)
+        }
+    }
 
 }
