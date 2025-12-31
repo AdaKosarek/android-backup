@@ -1,4 +1,4 @@
-package cz.mendelu.pef.fooddiary.ui.screens.detail
+package cz.mendelu.pef.fooddiary.ui.screens.saveddetail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,66 +19,59 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.AccessTime
-import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.People
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import cz.mendelu.pef.fooddiary.R
-import cz.mendelu.pef.fooddiary.model.RecipeDetail
+import cz.mendelu.pef.fooddiary.database.SavedMeal
+import cz.mendelu.pef.fooddiary.model.SavedMealSource
 import cz.mendelu.pef.fooddiary.navigation.Destination
 import cz.mendelu.pef.fooddiary.navigation.INavigationRouter
 import cz.mendelu.pef.fooddiary.ui.elements.BaseScreen
 import cz.mendelu.pef.fooddiary.ui.elements.detail.IngredientRow
-import cz.mendelu.pef.fooddiary.ui.elements.detail.InstructionSection
-import cz.mendelu.pef.fooddiary.ui.elements.detail.NutritionSection
+import cz.mendelu.pef.fooddiary.ui.elements.detail.NutritionSectionSavedMeal
 import cz.mendelu.pef.fooddiary.ui.elements.PlaceholderScreenContent
+import cz.mendelu.pef.fooddiary.ui.elements.detail.InstructionSectionSavedMeal
+import cz.mendelu.pef.fooddiary.ui.elements.detail.SavedMealLocalInfoSection
 import cz.mendelu.pef.fooddiary.ui.theme.ChipBackground
 import cz.mendelu.pef.fooddiary.ui.theme.GrayText
 import cz.mendelu.pef.fooddiary.ui.theme.OrangePrimary
-import cz.mendelu.pef.fooddiary.ui.theme.halfMargin
+import cz.mendelu.pef.fooddiary.ui.theme.basicMargin
 
 @Composable
-fun FoodDetailScreen(
+fun SavedDetailScreen(
     navigation: INavigationRouter,
-    foodId: Long,
-    viewModel: FoodDetailViewModel = hiltViewModel()
+    localId: Long,
+    viewModel: SavedDetailViewModel = hiltViewModel()
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(foodId) {
-        viewModel.loadRecipe(foodId)
+    LaunchedEffect(localId) {
+        viewModel.loadMeal(localId)
     }
-
-    LaunchedEffect(state.value.savedSuccessfully) {
-        if (state.value.savedSuccessfully) {
+    LaunchedEffect(state.value.deletedSuccessfully) {
+        if (state.value.deletedSuccessfully) {
             navigation.returnBack()
         }
     }
 
     BaseScreen(
         hideTopBar = true,
-        currentDestination = Destination.FoodDetailScreen,
+        currentDestination = Destination.SavedDetailScreen,
         onBottomNavClick = { navigation.navigateTo(it) },
         showLoading = state.value.loading,
         placeholderScreenContent =
@@ -88,32 +79,35 @@ fun FoodDetailScreen(
                 PlaceholderScreenContent(
                     image = null,
                     title = null,
-                    text = stringResource(id = it)
+                    text = stringResource(it)
                 )
             }
     ) { paddingValues ->
-
-        FoodDetailScreenContent(
+        SavedDetailScreenContent(
             paddingValues = paddingValues,
-            recipe = state.value.recipe,
+            meal = state.value.meal,
             loading = state.value.loading,
             onBackClick = { navigation.returnBack() },
-            onSaveClick = viewModel::saveRecipe
+            isEditing = state.value.isEditing,
+            actions = viewModel,
+            state = state.value
         )
     }
 }
 
 @Composable
-fun FoodDetailScreenContent(
+fun SavedDetailScreenContent(
     paddingValues: PaddingValues,
-    recipe: RecipeDetail?,
+    meal: SavedMeal?,
     loading: Boolean,
     onBackClick: () -> Unit,
-    onSaveClick: () -> Unit
+    isEditing: Boolean,
+    actions: SavedDetailActions,
+    state: SavedDetailScreenUIState
 ) {
 
     if (loading) {
-        Box(modifier = Modifier.fillMaxSize()) {}
+        Box(modifier = Modifier.fillMaxSize())
         return
     }
 
@@ -122,123 +116,143 @@ fun FoodDetailScreenContent(
             .fillMaxSize()
             .padding(bottom = paddingValues.calculateBottomPadding())
             .verticalScroll(rememberScrollState())
-            .testTag("TestTagDetailContainer")
     ) {
 
-        if (recipe == null) {
+        if (meal == null) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
                     text = stringResource(R.string.no_detail_data),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
-        } else {
-            //foto
-            Box(modifier = Modifier
+            return
+        }
+
+        val showLocalSection = meal.source == SavedMealSource.FAB || meal.source == SavedMealSource.API_PLUS_FAB
+        val showApiSection = meal.source == SavedMealSource.API_ONLY || meal.source == SavedMealSource.API_PLUS_FAB
+
+        Box(
+            modifier = Modifier
                 .fillMaxWidth()
                 .height(260.dp)
-            ) {
+        ) {
 
-                AsyncImage(
-                    model = recipe.image ?: R.drawable.foods_common,
-                    contentDescription = recipe.title,
-                    modifier = Modifier.fillMaxWidth(),
-                    contentScale = ContentScale.Crop
+            AsyncImage(
+                model = meal.userPhotoUri ?: meal.apiImage ?: R.drawable.foods_common,
+                contentDescription = meal.title,
+                modifier = Modifier.fillMaxWidth(),
+                contentScale = ContentScale.Crop
+            )
+
+            IconButton(
+                onClick = onBackClick,
+                modifier = Modifier
+                    .padding(start = 12.dp, top = 36.dp)
+                    .background(Color.White, CircleShape)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = GrayText
                 )
-                //back
+            }
+            if(showLocalSection) {
                 IconButton(
-                    onClick = onBackClick,
+                    onClick = actions::onToggleFavorite,
                     modifier = Modifier
-                        .padding(start = 12.dp, top = 36.dp)
-                        .align(Alignment.TopStart)
-                        .background(
-                            Color.White,
-                            CircleShape
-                        )
-                        .testTag("TestTagDetailBackButton")
+                        .padding(end = 12.dp, top = 36.dp)
+                        .align(Alignment.TopEnd)
+                        .background(Color.White, CircleShape)
                 ) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
-                        tint = GrayText
+                        imageVector =
+                            if (meal.isFavorite)
+                                Icons.Filled.Favorite
+                            else
+                                Icons.Outlined.FavoriteBorder,
+                        contentDescription = "favorite",
+                        tint =
+                            if (meal.isFavorite)
+                                OrangePrimary
+                            else
+                                GrayText
                     )
                 }
-
             }
+        }
 
+        //UZIVATEL
+        if (showLocalSection) {
+            SavedMealLocalInfoSection(
+                meal = meal,
+                actions = actions,
+                isEditing = isEditing,
+                state = state
+            )
 
-            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
-                //.padding(paddingValues)
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        //API
+        if (showApiSection) {
+            Column(
+                modifier = Modifier.padding(horizontal = 16.dp)
             ) {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(basicMargin()))
 
                 Text(
-                    text = recipe.title ?: "Food",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.testTag("TestTagDetailTitle")
+                    text = (meal.title + stringResource(R.string.recipe)),
+                    style = MaterialTheme.typography.titleLarge
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                //chips
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Icon(Icons.Outlined.AccessTime, contentDescription = null, tint = GrayText)
-                    Text("${recipe.readyInMinutes ?: "-"} min", color = GrayText)
+                    Text("${meal.readyInMinutes ?: "-"} min", color = GrayText)
 
                     Icon(Icons.Outlined.People, contentDescription = null, tint = GrayText)
-                    Text("${recipe.servings ?: "-"} servings", color = GrayText)
+                    Text("${meal.servings ?: "-"} servings", color = GrayText)
 
-                    recipe.dishTypes?.firstOrNull()?.let {
+                    meal.dishTypes?.firstOrNull()?.let {
                         Box(
                             modifier = Modifier
                                 .background(ChipBackground, RoundedCornerShape(50))
                                 .padding(horizontal = 12.dp, vertical = 6.dp)
                         ) {
-                            Text(
-                                text = it.replaceFirstChar(Char::titlecase),
-                                color = GrayText
-                            )
+                            Text(it.replaceFirstChar(Char::titlecase), color = GrayText)
                         }
                     }
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                //nutritions
                 Text(
                     text = stringResource(R.string.nutritional_values),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(modifier = Modifier.height(12.dp))
-
-                Box(modifier = Modifier.testTag("TestTagDetailNutrition")) {
-                    NutritionSection(recipe)
+                meal.nutrition?.let {
+                    NutritionSectionSavedMeal(it)
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                //ingredients
                 Text(
                     text = stringResource(R.string.ingredients),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium
                 )
-
                 Spacer(modifier = Modifier.height(12.dp))
 
-
-                Column(Modifier.testTag("TestTagDetailIngredientsList")) {
-                    recipe.extendedIngredients?.forEach { ing ->
-                        IngredientRow(ingredient = ing,
-                            modifier = Modifier.testTag("TestTagDetailIngredient"))
-                    }
+                meal.extendedIngredients?.forEach { ing ->
+                    IngredientRow(ingredient = ing)
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                //instructions
                 Text(
                     text = stringResource(R.string.preparation_instructions),
                     style = MaterialTheme.typography.titleMedium,
@@ -246,36 +260,9 @@ fun FoodDetailScreenContent(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Box(modifier = Modifier.testTag("TestTagDetailInstruction")) {
-                    InstructionSection(recipe)
-                }
+                InstructionSectionSavedMeal(meal)
 
                 Spacer(modifier = Modifier.height(32.dp))
-
-                //save
-                Button(
-                    onClick = onSaveClick,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(46.dp),
-                    shape = RoundedCornerShape(50),
-                    colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary)
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.BookmarkBorder,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(20.dp)
-                    )
-
-                    Spacer(modifier = Modifier.width(halfMargin()))
-
-                    Text(
-                        text = stringResource(R.string.save_food),
-                        color = Color.White
-                    )
-                }
-
             }
         }
     }

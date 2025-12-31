@@ -1,6 +1,9 @@
 package cz.mendelu.pef.fooddiary.ui.screens.saved
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,6 +65,7 @@ fun SavedScreen(
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
     val meals = remember { mutableStateListOf<SavedMeal>() }
+    val selectedFilter = remember { mutableStateOf(SavedFilter.SAVED) }
 
     when (val current = state.value) {
         is SavedScreenUIState.Default -> {
@@ -71,6 +76,23 @@ fun SavedScreen(
             meals.addAll(current.meals)
         }
     }
+
+    val filteredMeals = remember(meals, selectedFilter.value) {
+        when (selectedFilter.value) {
+
+            SavedFilter.SAVED ->
+                meals.filter {
+                    it.source != SavedMealSource.API_ONLY
+                }
+
+            SavedFilter.FAVORITES ->
+                meals.filter { it.isFavorite }
+
+            SavedFilter.RECIPES ->
+                meals.filter { it.source == SavedMealSource.API_ONLY }
+        }
+    }
+
 
     BaseScreen(
         topBarText = stringResource(R.string.nav_saved),
@@ -85,23 +107,48 @@ fun SavedScreen(
             ) {
                 Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
             }
-        },
-        placeholderScreenContent = if (meals.isEmpty()) {
-            PlaceholderScreenContent(
-                image = null,
-                title = stringResource(R.string.saved_empty_title),
-                text = stringResource(R.string.saved_empty_text)
-            )
-        } else null
-    ) { paddingValues ->
+        }
+    ) {  paddingValues ->
 
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .background(ScreenBackground)
         ) {
-            items(meals) { meal ->
-                SavedMealRow(meal = meal)
+
+            SavedFilterSwitcher(
+                selected = selectedFilter.value,
+                onSelected = { selectedFilter.value = it }
+            )
+
+            if (filteredMeals.isEmpty()) {
+
+                PlaceholderScreenContent(
+                    image = null,
+                    title = when (selectedFilter.value) {
+                        SavedFilter.SAVED -> stringResource(R.string.saved_empty_title)
+                        SavedFilter.FAVORITES -> stringResource(R.string.favorites_empty_title)
+                        SavedFilter.RECIPES -> stringResource(R.string.recipes_empty_title)
+                    },
+                    text = when (selectedFilter.value) {
+                        SavedFilter.SAVED -> stringResource(R.string.saved_empty_text)
+                        SavedFilter.FAVORITES -> stringResource(R.string.favorites_empty_text)
+                        SavedFilter.RECIPES -> stringResource(R.string.recipes_empty_text)
+                    }
+                )
+
+            } else {
+
+                LazyColumn {
+                    items(filteredMeals) { meal ->
+                        SavedMealRow(
+                            meal = meal,
+                            onClick = {
+                                navigation.navigateToSavedDetail(meal.localId)
+                            }
+                        )
+                    }
+                }
             }
         }
     }
@@ -110,13 +157,15 @@ fun SavedScreen(
 
 @Composable
 fun SavedMealRow(
-    meal: SavedMeal
+    meal: SavedMeal,
+    onClick: () -> Unit
 ) {
     val isApiOnly = meal.source == SavedMealSource.API_ONLY
 
     val matrix = ColorMatrix().apply {
         setToSaturation(if (isApiOnly) 0f else 1f)
     }
+
 
     val imageModel =
         meal.userPhotoUri
@@ -126,10 +175,11 @@ fun SavedMealRow(
     Card(
         modifier = Modifier
             .padding(horizontal = basicMargin(), vertical = halfMargin())
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = CardBackground)
-    ) {
+    ){
         Row(
             modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -169,6 +219,47 @@ fun SavedMealRow(
                 if (meal.hasLocation) {
                     Spacer(modifier = Modifier.height(6.dp))
                     LocationTag()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SavedFilterSwitcher(
+    selected: SavedFilter,
+    onSelected: (SavedFilter) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(basicMargin())
+    ) {
+        SavedFilter.entries.forEach { filter ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .clickable { onSelected(filter) }
+            ) {
+                Text(
+                    text = when (filter) {
+                        SavedFilter.SAVED -> stringResource(R.string.saved_filter)
+                        SavedFilter.FAVORITES -> stringResource(R.string.favorites_filter)
+                        SavedFilter.RECIPES -> stringResource(R.string.recipes_filter)
+                    },
+                    color = if (selected == filter) OrangePrimary else GrayText
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                if (selected == filter) {
+                    Box(
+                        modifier = Modifier
+                            .height(2.dp)
+                            .width(40.dp)
+                            .background(OrangePrimary)
+                    )
                 }
             }
         }

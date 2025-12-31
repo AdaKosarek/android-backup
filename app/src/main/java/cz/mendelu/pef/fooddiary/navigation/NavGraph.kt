@@ -13,6 +13,7 @@ import cz.mendelu.pef.fooddiary.ui.screens.addmealform.AddMealFormScreen
 import cz.mendelu.pef.fooddiary.ui.screens.detail.FoodDetailScreen
 import cz.mendelu.pef.fooddiary.ui.screens.discover.DiscoverScreen
 import cz.mendelu.pef.fooddiary.ui.screens.saved.SavedScreen
+import cz.mendelu.pef.fooddiary.ui.screens.saveddetail.SavedDetailScreen
 import cz.mendelu.pef.fooddiary.ui.screens.search.SearchScreen
 
 
@@ -33,6 +34,7 @@ fun NavGraph(
             DiscoverScreen(navigation)
         }
 
+        //apidetail
         composable(
             route = "${Destination.FoodDetailScreen.route}/{foodId}",
             arguments = listOf(
@@ -45,6 +47,7 @@ fun NavGraph(
             FoodDetailScreen(navigation, foodId)
         }
 
+        //addmeal
         composable(
             route = "${Destination.AddMealFormScreen.route}/{apiId}",
             arguments = listOf(
@@ -65,6 +68,21 @@ fun NavGraph(
             )
         }
 
+        //saveddetail
+        composable(
+            route = "${Destination.SavedDetailScreen.route}/{localId}",
+            arguments = listOf(
+                navArgument("localId") {
+                    type = NavType.LongType
+                }
+            )
+        ) {
+            val localId = it.arguments?.getLong("localId") ?: -1L
+            SavedDetailScreen(
+                navigation = navigation,
+                localId = localId
+            )
+        }
 
         composable(Destination.SavedScreen.route) {
             SavedScreen(navigation)

@@ -1,4 +1,4 @@
-package cz.mendelu.pef.fooddiary.ui.elements
+package cz.mendelu.pef.fooddiary.ui.elements.detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cz.mendelu.pef.fooddiary.model.Ingredient
 import cz.mendelu.pef.fooddiary.ui.theme.GrayText
-import cz.mendelu.pef.fooddiary.ui.theme.basicMargin
 
 @Composable
 fun IngredientRow(ingredient: Ingredient,

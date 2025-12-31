@@ -1,4 +1,6 @@
 package cz.mendelu.pef.fooddiary.ui.screens.addmealform
+
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.mendelu.pef.fooddiary.R
@@ -7,6 +9,7 @@ import cz.mendelu.pef.fooddiary.communication.IFoodsRemoteRepository
 import cz.mendelu.pef.fooddiary.database.ISavedMealsLocalRepository
 import cz.mendelu.pef.fooddiary.database.SavedMeal
 import cz.mendelu.pef.fooddiary.model.SavedMealSource
+import cz.mendelu.pef.fooddiary.utils.ImageStorageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AddMealFormViewModel @Inject constructor(
     private val foodsRepository: IFoodsRemoteRepository,
-    private val savedMealsRepository: ISavedMealsLocalRepository
+    private val savedMealsRepository: ISavedMealsLocalRepository,
+    private val imageStorageRepository: ImageStorageRepository
 ) : ViewModel() {
 
     private var initialized = false
@@ -80,6 +84,10 @@ class AddMealFormViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(userPhotoUri = uri)
     }
 
+    fun onUseLocationChange(enabled: Boolean) {
+        _uiState.value = _uiState.value.copy(useLocation = enabled)
+    }
+
     fun saveMeal(
         latitude: Double?,
         longitude: Double?
@@ -95,6 +103,10 @@ class AddMealFormViewModel @Inject constructor(
 
         val recipe = state.recipe
 
+        val copiedPhotoUri = state.userPhotoUri?.let {
+            imageStorageRepository.saveMealPhoto(Uri.parse(it))
+        }
+
         val savedMeal = SavedMeal(
             source = if (recipe != null) SavedMealSource.API_PLUS_FAB  else SavedMealSource.FAB,
             apiId = recipe?.id,
@@ -109,7 +121,7 @@ class AddMealFormViewModel @Inject constructor(
             analyzedInstructions = recipe?.analyzedInstructions,
 
             customName = state.customName,
-            userPhotoUri = state.userPhotoUri,
+            userPhotoUri = copiedPhotoUri,
             userNote = state.userNote,
             placeName = state.placeName.ifBlank {null},
 
@@ -125,3 +137,4 @@ class AddMealFormViewModel @Inject constructor(
         }
     }
 }
+

@@ -13,6 +13,8 @@ data class AddMealFormUIState(
     val userPhotoUri: String? = null,
     val placeName: String = "",
 
+    val useLocation: Boolean = false,
+
     val error: AddMealFormError? = null,
     val savedSuccessfully: Boolean = false
 )

@@ -47,6 +47,11 @@ class NavigationRouterImpl(
         navController.navigate(route)
     }
 
+    override fun navigateToSavedDetail(localId: Long) {
+        navController.navigate(
+            "${Destination.SavedDetailScreen.route}/$localId"
+        )
+    }
 
     override fun returnBack() {
         navController.popBackStack()

@@ -10,7 +10,7 @@ sealed class Destination(
 
 
     object FoodDetailScreen : Destination("food_detail")
-    object AddOptionScreen : Destination("add_option")
+    object SavedDetailScreen : Destination("saved_detail")
     object SearchScreen : Destination("search")
     object AddMealFormScreen : Destination("add_meal_form")
 }

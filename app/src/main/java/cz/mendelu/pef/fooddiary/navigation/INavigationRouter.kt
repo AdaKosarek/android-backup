@@ -6,4 +6,5 @@ interface INavigationRouter {
     fun returnBack()
     fun navigateToFoodDetail(foodId: Long)
     fun navigateToAddMealForm(apiId: Long?)
+    fun navigateToSavedDetail(localId: Long)
 }

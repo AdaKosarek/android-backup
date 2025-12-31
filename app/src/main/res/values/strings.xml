@@ -7,7 +7,7 @@
     <string name="no_detail_data">No detail data.</string>
     <string name="nutritional_values">Nutritional values</string>
     <string name="ingredients">Ingredients</string>
-    <string name="save_food">Save food</string>
+    <string name="save_food">Save recipe</string>
     <string name="preparation_instructions">Preparation instructions</string>
     <string name="nav_discover">Discover</string>
     <string name="nav_saved">Saved</string>
@@ -15,7 +15,7 @@
     <string name="nav_settings">Settings</string>
     <string name="saved_empty_text">No saved meals yet.</string>
     <string name="saved_empty_title">No meals.</string>
-    <string name="has_location">Has location.</string>
+    <string name="has_location">Has location</string>
     <string name="add_option_title">Select add option</string>
     <string name="add_option_subtitle">Choose the way how to add meal:</string>
     <string name="add_option_take_picture_title">Take or choose the picture</string>
@@ -37,4 +37,16 @@
     <string name="take_photo_hint">Take a photo</string>
     <string name="cam_permission">To use the camera enable the Camera permission.</string>
     <string name="food_not_recognized">Meal was not recognized.</string>
+    <string name="use_location">Use location</string>
+    <string name="my_note">My note</string>
+    <string name="recipe">" - recipe"</string>
+    <string name="saved_filter">Saved</string>
+    <string name="favorites_filter">Favorites</string>
+    <string name="recipes_filter">Recipes</string>
+    <string name="favorites_empty_title">No favorites.</string>
+    <string name="recipes_empty_title">No saved recipes.</string>
+    <string name="favorites_empty_text">No saved favorite meals yet.</string>
+    <string name="recipes_empty_text">"No saved recipes yet (separate). "</string>
+
+
 </resources>

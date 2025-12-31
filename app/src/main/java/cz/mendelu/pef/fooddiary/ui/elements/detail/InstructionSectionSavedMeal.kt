@@ -1,5 +1,4 @@
-package cz.mendelu.pef.fooddiary.ui.elements
-
+package cz.mendelu.pef.fooddiary.ui.elements.detail
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -8,18 +7,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cz.mendelu.pef.fooddiary.model.RecipeDetail
+import cz.mendelu.pef.fooddiary.database.SavedMeal
 import cz.mendelu.pef.fooddiary.ui.theme.basicMargin
 
+
 @Composable
-fun InstructionSection(recipe: RecipeDetail) {
+fun InstructionSectionSavedMeal(
+    meal: SavedMeal
+) {
     val steps =
-        recipe.analyzedInstructions?.firstOrNull()?.steps
+        meal.analyzedInstructions
+            ?.firstOrNull()
+            ?.steps
             ?: emptyList()
 
     if (steps.isEmpty()) {
         Text(
-            text = recipe.instructions ?: "",
+            text = meal.instructions ?: "",
             modifier = Modifier.padding(horizontal = basicMargin()),
             lineHeight = 22.sp
         )

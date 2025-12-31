@@ -5,6 +5,9 @@ import androidx.lifecycle.viewModelScope
 import cz.mendelu.pef.fooddiary.R
 import cz.mendelu.pef.fooddiary.communication.CommunicationResult
 import cz.mendelu.pef.fooddiary.communication.IFoodsRemoteRepository
+import cz.mendelu.pef.fooddiary.database.ISavedMealsLocalRepository
+import cz.mendelu.pef.fooddiary.database.SavedMeal
+import cz.mendelu.pef.fooddiary.model.SavedMealSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FoodDetailViewModel @Inject constructor(
-    private val foodsRepository: IFoodsRemoteRepository
+    private val foodsRepository: IFoodsRemoteRepository,
+    private val savedMealsRepository: ISavedMealsLocalRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FoodDetailScreenUIState())
@@ -64,4 +68,41 @@ class FoodDetailViewModel @Inject constructor(
             }
         }
     }
+
+    fun saveRecipe() {
+        val recipe = _uiState.value.recipe ?: return
+
+        val savedMeal = SavedMeal(
+            source = SavedMealSource.API_ONLY,
+
+            apiId = recipe.id,
+            title = recipe.title,
+            apiImage = recipe.image,
+            readyInMinutes = recipe.readyInMinutes,
+            servings = recipe.servings,
+            dishTypes = recipe.dishTypes,
+
+            nutrition = recipe.nutrition,
+            extendedIngredients = recipe.extendedIngredients,
+            instructions = recipe.instructions,
+            analyzedInstructions = recipe.analyzedInstructions,
+
+            // všechno ostatní NULL
+            customName = null,
+            userPhotoUri = null,
+            userNote = null,
+            latitude = null,
+            longitude = null,
+            placeName = null,
+
+            isFavorite = false,
+            savedTimestamp = System.currentTimeMillis()
+        )
+
+        viewModelScope.launch {
+            savedMealsRepository.insert(savedMeal)
+            _uiState.value = _uiState.value.copy(savedSuccessfully = true)
+        }
+    }
+
 }

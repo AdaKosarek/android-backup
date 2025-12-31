@@ -1,4 +1,6 @@
 package cz.mendelu.pef.fooddiary.ui.screens.addmealform
+import android.Manifest
+import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -7,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,20 +26,28 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.google.android.gms.location.LocationServices
 import cz.mendelu.pef.fooddiary.R
 import cz.mendelu.pef.fooddiary.navigation.Destination
 import cz.mendelu.pef.fooddiary.navigation.INavigationRouter
@@ -53,6 +64,31 @@ fun AddMealFormScreen(
     viewModel: AddMealFormViewModel = hiltViewModel()
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    //loc
+    var hasLocationPermission by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+
+    val locationPermissionLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { granted ->
+            hasLocationPermission = granted
+            if (!granted) {
+                viewModel.onUseLocationChange(false)
+            }
+        }
+
+    val fusedLocationClient =
+        remember { LocationServices.getFusedLocationProviderClient(context) }
+
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
@@ -87,9 +123,11 @@ fun AddMealFormScreen(
         AddMealFormContent(
             paddingValues = padding,
             state = state.value,
+
             onCustomNameChange = viewModel::onCustomNameChange,
             onNoteChange = viewModel::onNoteChange,
             onPlaceNameChange = viewModel::onPlaceNameChange,
+
             onPickImage = {
                 imagePickerLauncher.launch(
                     PickVisualMediaRequest(
@@ -97,11 +135,32 @@ fun AddMealFormScreen(
                     )
                 )
             },
+
+            onUseLocationChange = { enabled ->
+                if (enabled && !hasLocationPermission) {
+                    locationPermissionLauncher.launch(
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    )
+                } else {
+                    viewModel.onUseLocationChange(enabled)
+                }
+            },
+
             onSaveClick = {
-                viewModel.saveMeal(
-                    latitude = null,
-                    longitude = null
-                )
+                if (state.value.useLocation && hasLocationPermission) {
+                    fusedLocationClient.lastLocation
+                        .addOnSuccessListener { location ->
+                            viewModel.saveMeal(
+                                latitude = location?.latitude,
+                                longitude = location?.longitude
+                            )
+                        }
+                        .addOnFailureListener {
+                            viewModel.saveMeal(null, null)
+                        }
+                } else {
+                    viewModel.saveMeal(null, null)
+                }
             }
         )
     }
@@ -115,6 +174,7 @@ fun AddMealFormContent(
     onNoteChange: (String) -> Unit,
     onPlaceNameChange: (String) -> Unit,
     onPickImage: () -> Unit,
+    onUseLocationChange: (Boolean) -> Unit,
     onSaveClick: () -> Unit
 ) {
     Column(
@@ -178,7 +238,7 @@ fun AddMealFormContent(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(basicMargin()))
 
         OutlinedTextField(
             value = state.userNote,
@@ -188,7 +248,7 @@ fun AddMealFormContent(
             minLines = 3
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(basicMargin()))
 
         OutlinedTextField(
             value = state.placeName,
@@ -196,6 +256,27 @@ fun AddMealFormContent(
             modifier = Modifier.fillMaxWidth(),
             label = { Text(stringResource(R.string.place_optional)) }
         )
+
+        Spacer(modifier = Modifier.height(basicMargin()))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(R.string.use_location),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+
+            Switch(
+                checked = state.useLocation,
+                onCheckedChange = onUseLocationChange
+            )
+        }
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -214,6 +295,6 @@ fun AddMealFormContent(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(basicMargin()))
     }
 }

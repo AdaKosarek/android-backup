@@ -5,5 +5,6 @@ import cz.mendelu.pef.fooddiary.model.RecipeDetail
 data class FoodDetailScreenUIState(
     val loading: Boolean = true,
     val recipe: RecipeDetail? = null,
-    val error: Int? = null
+    val error: Int? = null,
+    val savedSuccessfully: Boolean = false
 )
