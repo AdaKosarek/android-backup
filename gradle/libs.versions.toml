@@ -1,12 +1,12 @@
 [versions]
 agp = "8.12.3"
-kotlin = "2.0.21"
+kotlin = "2.2.20"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 
-ksp = "2.0.21-1.0.27"
+ksp = "2.2.20-2.0.4"
 
 lifecycleRuntimeKtx = "2.9.3"
 activityCompose = "1.11.0"
@@ -16,7 +16,7 @@ navigation = "2.9.4"
 kotlin-serialization = "2.0.21"
 kotlin-serialization-json = "1.7.3"
 
-room = "2.6.1"
+room = "2.8.3"
 datastore = "1.1.7"
 moshi = "1.15.2"
 
@@ -39,6 +39,13 @@ tflite = "2.3.0"
 imageLabelingCustomCommon = "17.0.0"
 camerax-version = "1.4.0"
 play-services-location = "21.3.0"
+
+googlemap = "6.12.1"
+googlemap_compose = "19.2.0"
+googlemap_foundation = "1.9.4"
+googlemap_utils = "3.19.0"
+googlemap_widgets = "6.12.1"
+googlemap_compose_utils = "6.12.1"
 
 
 [libraries]
@@ -111,6 +118,15 @@ camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version.r
 camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "camerax-version" }
 camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "camerax-version" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "play-services-location"}
+
+googlemap = { group = "com.google.maps.android", name = "maps-compose", version.ref = "googlemap" }
+googlemap-compose = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "googlemap_compose" }
+googlemap-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "googlemap_foundation" }
+googlemap_utils = { group = "com.google.maps.android", name = "android-maps-utils", version.ref = "googlemap_utils" }
+googlemap_widgets = { group = "com.google.maps.android", name = "maps-compose-widgets", version.ref = "googlemap_widgets" }
+googlemap_compose_utils = { group = "com.google.maps.android", name = "maps-compose-utils", version.ref = "googlemap_compose_utils" }
+
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -1,5 +1,6 @@
 package cz.mendelu.pef.fooddiary.database
 
+import cz.mendelu.pef.fooddiary.model.SavedMealSource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -25,4 +26,6 @@ class SavedMealsLocalRepositoryImpl @Inject constructor(private val dao: SavedMe
         return dao.getById(localId)
     }
 
+    override fun getAllForMap(): Flow<List<SavedMeal>> =
+        dao.getAllForMap(excludedSource = SavedMealSource.API_ONLY)
 }

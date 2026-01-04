@@ -15,6 +15,10 @@ class SavedViewModel @Inject constructor(
     private val repository: ISavedMealsLocalRepository
 ) : ViewModel() {
 
+    init {
+        loadMeals()
+    }
+
     private val _uiState =
         MutableStateFlow<SavedScreenUIState>(SavedScreenUIState.Default)
     val uiState: StateFlow<SavedScreenUIState> = _uiState.asStateFlow()

@@ -24,7 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -47,7 +47,6 @@ import cz.mendelu.pef.fooddiary.navigation.Destination
 import cz.mendelu.pef.fooddiary.navigation.INavigationRouter
 import cz.mendelu.pef.fooddiary.ui.elements.BaseScreen
 import cz.mendelu.pef.fooddiary.ui.elements.LocationTag
-import cz.mendelu.pef.fooddiary.ui.elements.PlaceholderScreenContent
 import cz.mendelu.pef.fooddiary.ui.theme.CardBackground
 import cz.mendelu.pef.fooddiary.ui.theme.GrayText
 import cz.mendelu.pef.fooddiary.ui.theme.OrangePrimary
@@ -63,27 +62,14 @@ fun SavedScreen(
     navigation: INavigationRouter,
     viewModel: SavedViewModel = hiltViewModel()
 ) {
-    val state = viewModel.uiState.collectAsStateWithLifecycle()
-    val meals = remember { mutableStateListOf<SavedMeal>() }
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     val selectedFilter = remember { mutableStateOf(SavedFilter.SAVED) }
-
-    when (val current = state.value) {
-        is SavedScreenUIState.Default -> {
-            viewModel.loadMeals()
-        }
-        is SavedScreenUIState.Success -> {
-            meals.clear()
-            meals.addAll(current.meals)
-        }
-    }
+    val meals = (state as? SavedScreenUIState.Success)?.meals.orEmpty()
 
     val filteredMeals = remember(meals, selectedFilter.value) {
         when (selectedFilter.value) {
-
             SavedFilter.SAVED ->
-                meals.filter {
-                    it.source != SavedMealSource.API_ONLY
-                }
+                meals.filter { it.source != SavedMealSource.API_ONLY }
 
             SavedFilter.FAVORITES ->
                 meals.filter { it.isFavorite }
@@ -93,22 +79,19 @@ fun SavedScreen(
         }
     }
 
-
     BaseScreen(
         topBarText = stringResource(R.string.nav_saved),
         currentDestination = Destination.SavedScreen,
         onBottomNavClick = { navigation.navigateTo(it) },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {
-                    navigation.navigateTo(Destination.SearchScreen)
-                },
+                onClick = { navigation.navigateTo(Destination.SearchScreen) },
                 containerColor = OrangePrimary
             ) {
                 Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
             }
         }
-    ) {  paddingValues ->
+    ) { paddingValues ->
 
         Column(
             modifier = Modifier
@@ -122,23 +105,21 @@ fun SavedScreen(
             )
 
             if (filteredMeals.isEmpty()) {
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    text = stringResource(
+                        when (selectedFilter.value) {
+                            SavedFilter.SAVED -> R.string.saved_empty_text
+                            SavedFilter.FAVORITES -> R.string.favorites_empty_text
+                            SavedFilter.RECIPES -> R.string.recipes_empty_text
+                        }
+                    ),
+                    color = GrayText,
 
-                PlaceholderScreenContent(
-                    image = null,
-                    title = when (selectedFilter.value) {
-                        SavedFilter.SAVED -> stringResource(R.string.saved_empty_title)
-                        SavedFilter.FAVORITES -> stringResource(R.string.favorites_empty_title)
-                        SavedFilter.RECIPES -> stringResource(R.string.recipes_empty_title)
-                    },
-                    text = when (selectedFilter.value) {
-                        SavedFilter.SAVED -> stringResource(R.string.saved_empty_text)
-                        SavedFilter.FAVORITES -> stringResource(R.string.favorites_empty_text)
-                        SavedFilter.RECIPES -> stringResource(R.string.recipes_empty_text)
-                    }
                 )
-
+                Spacer(modifier = Modifier.weight(1f))
             } else {
-
                 LazyColumn {
                     items(filteredMeals) { meal ->
                         SavedMealRow(
@@ -165,7 +146,6 @@ fun SavedMealRow(
     val matrix = ColorMatrix().apply {
         setToSaturation(if (isApiOnly) 0f else 1f)
     }
-
 
     val imageModel =
         meal.userPhotoUri

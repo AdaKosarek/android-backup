@@ -181,7 +181,6 @@ fun RecipeRow(
     selectedCategory: String,
     onClick: () -> Unit
 ) {
-    var isFavorite by remember { mutableStateOf(false) }
     val servings = recipe.servings
     val dishType = if (selectedCategory != "All") selectedCategory else recipe.dishTypes?.firstOrNull()?.replaceFirstChar(Char::titlecase) ?: "Food"
     val time = recipe.readyInMinutes ?: "Unkn"

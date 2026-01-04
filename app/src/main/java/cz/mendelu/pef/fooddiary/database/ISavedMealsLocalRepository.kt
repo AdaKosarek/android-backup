@@ -8,4 +8,5 @@ interface ISavedMealsLocalRepository {
     suspend fun update(savedMeal: SavedMeal)
     suspend fun delete(savedMeal: SavedMeal)
     suspend fun getById(localId: Long): SavedMeal
+    fun getAllForMap(): Flow<List<SavedMeal>>
 }

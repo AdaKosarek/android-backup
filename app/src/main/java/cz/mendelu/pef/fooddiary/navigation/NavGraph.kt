@@ -12,6 +12,7 @@ import androidx.navigation.navArgument
 import cz.mendelu.pef.fooddiary.ui.screens.addmealform.AddMealFormScreen
 import cz.mendelu.pef.fooddiary.ui.screens.detail.FoodDetailScreen
 import cz.mendelu.pef.fooddiary.ui.screens.discover.DiscoverScreen
+import cz.mendelu.pef.fooddiary.ui.screens.map.MapScreen
 import cz.mendelu.pef.fooddiary.ui.screens.saved.SavedScreen
 import cz.mendelu.pef.fooddiary.ui.screens.saveddetail.SavedDetailScreen
 import cz.mendelu.pef.fooddiary.ui.screens.search.SearchScreen
@@ -90,6 +91,10 @@ fun NavGraph(
 
         composable(Destination.SearchScreen.route) {
             SearchScreen(navigation)
+        }
+
+        composable(Destination.MapScreen.route) {
+            MapScreen(navigation)
         }
 
     }

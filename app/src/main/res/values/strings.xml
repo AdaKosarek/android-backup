@@ -47,6 +47,7 @@
     <string name="recipes_empty_title">No saved recipes.</string>
     <string name="favorites_empty_text">No saved favorite meals yet.</string>
     <string name="recipes_empty_text">"No saved recipes yet (separate). "</string>
+    <string name="open_detail">Open food detail →</string>
 
 
 </resources>
