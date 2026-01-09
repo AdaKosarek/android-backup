@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">FoodDiary</string>
     <string name="back">Back</string>
-    <string name="no_internet_connection">No internet connection</string>
-    <string name="failed_to_load_recipes">Failed to load recipes</string>
+    <string name="no_internet_connection">No internet connection.</string>
+    <string name="failed_to_load_recipes">Failed to load recipes.</string>
     <string name="exception">Exception</string>
     <string name="no_detail_data">No detail data.</string>
     <string name="nutritional_values">Nutritional values</string>
@@ -49,5 +49,26 @@
     <string name="recipes_empty_text">"No saved recipes yet (separate). "</string>
     <string name="open_detail">Open food detail →</string>
 
-
+    <string name="intro_text">Welcome to FoodDiary! Save your favorite meals, recipes, and the places where you enjoyed them.</string>
+    <string name="continue_to_app">Continue</string>
+    <string name="calories">calories</string>
+    <string name="protein">protein</string>
+    <string name="carbs">carbs</string>
+    <string name="fat">fat</string>
+    <string name="all">All</string>
+    <string name="main_dish">Main dish</string>
+    <string name="soup">Soup</string>
+    <string name="desert">Dessert</string>
+    <string name="side_dish">Side dish</string>
+    <string name="discover">Discover</string>
+    <string name="food">Food</string>
+    <string name="unknown">Unkn</string>
+    <string name="servings">servings</string>
+    <string name="remove_app_data">Remove app data</string>
+    <string name="about_app">About app</string>
+    <string name="data_manage">Data manage</string>
+    <string name="remove_app_data_confirm">Are you sure you want to delete all stored data?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="version">Version</string>
 </resources>

@@ -183,7 +183,7 @@ fun FoodDetailScreenContent(
                     Text("${recipe.readyInMinutes ?: "-"} min", color = GrayText)
 
                     Icon(Icons.Outlined.People, contentDescription = null, tint = GrayText)
-                    Text("${recipe.servings ?: "-"} servings", color = GrayText)
+                    Text("${recipe.servings ?: "-"} ${stringResource(R.string.servings)}\"", color = GrayText)
 
                     recipe.dishTypes?.firstOrNull()?.let {
                         Box(

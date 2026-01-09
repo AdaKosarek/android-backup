@@ -62,6 +62,9 @@ fun BottomNavigationBar(
                     Destination.MapScreen ->
                         currentDestination == Destination.MapScreen
 
+                    Destination.SettingsScreen ->
+                        currentDestination == Destination.SettingsScreen
+
                     else -> destination.route == currentDestination.route
                 }
 

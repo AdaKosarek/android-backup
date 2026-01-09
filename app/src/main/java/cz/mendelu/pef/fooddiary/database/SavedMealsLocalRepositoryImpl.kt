@@ -28,4 +28,8 @@ class SavedMealsLocalRepositoryImpl @Inject constructor(private val dao: SavedMe
 
     override fun getAllForMap(): Flow<List<SavedMeal>> =
         dao.getAllForMap(excludedSource = SavedMealSource.API_ONLY)
+
+    override suspend fun deleteAll() {
+        dao.deleteAll()
+    }
 }

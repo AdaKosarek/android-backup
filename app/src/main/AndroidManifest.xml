@@ -25,15 +25,24 @@
             android:value="AIzaSyC0OTiwAcTtmI7rCH90N2m0IhR7Lk5RIRA" />
 
         <activity
-            android:name=".ui.activities.MainActivity"
+            android:name=".ui.activities.AppIntroActivity"
+            android:exported="false"
+            android:theme="@style/Theme.FoodDiary.NoActionBar" />
+
+        <activity
+            android:name=".ui.activities.SplashScreenActivity"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.FoodDiary">
+            android:theme="@style/Theme.FoodDiary.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.activities.MainActivity"
+            android:exported="false"
+            android:theme="@style/Theme.FoodDiary" />
     </application>
 
 </manifest>

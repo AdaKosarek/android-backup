@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import cz.mendelu.pef.fooddiary.R
 import cz.mendelu.pef.fooddiary.model.RecipeDetail
 import cz.mendelu.pef.fooddiary.ui.theme.BlueDark
 import cz.mendelu.pef.fooddiary.ui.theme.BlueLight
@@ -32,7 +34,7 @@ fun NutritionSection(recipe: RecipeDetail) {
         calories?.let {
             NutrientBox(
                 "${it.amount?.toInt()} kcal",
-                "calories",
+                stringResource(R.string.calories),
                 PinkLight,
                 PinkDark,
                 Modifier.weight(1f)
@@ -42,7 +44,7 @@ fun NutritionSection(recipe: RecipeDetail) {
         protein?.let {
             NutrientBox(
                 "${it.amount?.toInt()} g",
-                "protein",
+                stringResource(R.string.protein),
                 BlueLight,
                 BlueDark,
                 Modifier.weight(1f)
@@ -51,7 +53,7 @@ fun NutritionSection(recipe: RecipeDetail) {
         carbs?.let {
             NutrientBox(
                 "${it.amount?.toInt()} g",
-                "carbs",
+                stringResource(R.string.carbs),
                 GreenLight,
                 GreenDark,
                 Modifier.weight(1f)
@@ -60,7 +62,7 @@ fun NutritionSection(recipe: RecipeDetail) {
         fat?.let {
             NutrientBox(
                 "${it.amount?.toInt()} g",
-                "fat",
+                stringResource(R.string.fat),
                 OrangeLight,
                 OrangeDark,
                 Modifier.weight(1f)

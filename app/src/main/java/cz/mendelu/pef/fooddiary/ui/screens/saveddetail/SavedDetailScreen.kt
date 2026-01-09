@@ -215,7 +215,7 @@ fun SavedDetailScreenContent(
                     Text("${meal.readyInMinutes ?: "-"} min", color = GrayText)
 
                     Icon(Icons.Outlined.People, contentDescription = null, tint = GrayText)
-                    Text("${meal.servings ?: "-"} servings", color = GrayText)
+                    Text("${meal.servings ?: "-"} ${stringResource(R.string.servings)}", color = GrayText)
 
                     meal.dishTypes?.firstOrNull()?.let {
                         Box(

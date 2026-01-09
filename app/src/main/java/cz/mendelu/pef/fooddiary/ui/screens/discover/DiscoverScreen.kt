@@ -67,23 +67,17 @@ fun DiscoverScreen(
     viewModel: DiscoverViewModel = hiltViewModel()
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
-    var selectedCategory by remember { mutableStateOf("All") }
-
-    val categoryToApi = mapOf(
-        "All" to null,
-        "Main dish" to "main dish",
-        "Soup" to "soup",
-        "Desert" to "dessert",
-        "Side dish" to "side dish"
-    )
+    var selectedCategory by remember {
+        mutableStateOf(FoodCategory.ALL)
+    }
 
     //kdyz se zmeni type jidla
     LaunchedEffect(selectedCategory) {
-        viewModel.loadRecipes(categoryToApi[selectedCategory])
+        viewModel.loadRecipes(selectedCategory.apiValue)
     }
 
     BaseScreen(
-        topBarText = "Discover",
+        topBarText =  stringResource(R.string.discover),
         currentDestination = Destination.DiscoverScreen,
         onBottomNavClick = { navigation.navigateTo(it) },
         showLoading = false,
@@ -111,12 +105,12 @@ fun DiscoverScreen(
 fun DiscoverScreenContent(
     paddingValues: PaddingValues,
     navigation: INavigationRouter,
-    selectedCategory: String,
-    onCategorySelected: (String) -> Unit,
+    selectedCategory: FoodCategory,
+    onCategorySelected: (FoodCategory) -> Unit,
     recipes: List<DiscoverRecipeItem>? = null,
     loading: Boolean
 ) {
-    val categoryNames = listOf("All", "Main Dish", "Soup", "Desert", "Side dish")
+    val categoryNames = FoodCategory.entries
 
     Column(
         modifier = Modifier
@@ -142,7 +136,7 @@ fun DiscoverScreenContent(
                             vertical = 10.dp)
                 ) {
                     Text(
-                        text = category,
+                        text = stringResource(category.labelRes),
                         color = if (isSelected) Color.White else GrayText
                     )
                 }
@@ -178,13 +172,27 @@ fun DiscoverScreenContent(
 @Composable
 fun RecipeRow(
     recipe: DiscoverRecipeItem,
-    selectedCategory: String,
+    selectedCategory: FoodCategory,
     onClick: () -> Unit
 ) {
     val servings = recipe.servings
-    val dishType = if (selectedCategory != "All") selectedCategory else recipe.dishTypes?.firstOrNull()?.replaceFirstChar(Char::titlecase) ?: "Food"
-    val time = recipe.readyInMinutes ?: "Unkn"
     val imageUrl = recipe.image ?: R.drawable.foods_common
+
+    val dishType = when {
+        selectedCategory != FoodCategory.ALL ->
+            stringResource(selectedCategory.labelRes)
+
+        recipe.dishTypes?.isNotEmpty() == true ->
+            recipe.dishTypes.first().replaceFirstChar(Char::titlecase)
+
+        else ->
+            stringResource(R.string.food)
+    }
+
+    val time = recipe.readyInMinutes?.let { "$it min" }
+        ?: stringResource(R.string.unknown)
+
+
 
     Card(
         modifier = Modifier

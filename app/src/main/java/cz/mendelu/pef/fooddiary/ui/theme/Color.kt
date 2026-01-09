@@ -11,7 +11,7 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 
-//Primary app brand
+//
 val OrangePrimary = Color(0xFFDF8A00)
 val OrangeText= Color(0xFFB47203)
 
@@ -28,6 +28,8 @@ val GreenDark  = Color(0xFF1FA84B)
 
 val OrangeLight = Color(0xFFFFF7E6)
 val OrangeDark  = Color(0xFFE29A00)
+val RedLight = Color(0xFFF5D5CE)
+val RedDark  = Color(0xFFBD2400)
 
 
 

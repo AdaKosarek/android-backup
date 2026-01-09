@@ -26,6 +26,9 @@ interface SavedMealsDao {
     @Delete
     suspend fun delete(savedMeal: SavedMeal)
 
+    @Query("DELETE FROM saved_meals")
+    suspend fun deleteAll()
+
     @Query(
         """
         SELECT * FROM saved_meals

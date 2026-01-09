@@ -16,6 +16,7 @@ import cz.mendelu.pef.fooddiary.ui.screens.map.MapScreen
 import cz.mendelu.pef.fooddiary.ui.screens.saved.SavedScreen
 import cz.mendelu.pef.fooddiary.ui.screens.saveddetail.SavedDetailScreen
 import cz.mendelu.pef.fooddiary.ui.screens.search.SearchScreen
+import cz.mendelu.pef.fooddiary.ui.screens.settings.SettingsScreen
 
 
 @Composable
@@ -95,6 +96,10 @@ fun NavGraph(
 
         composable(Destination.MapScreen.route) {
             MapScreen(navigation)
+        }
+
+        composable(Destination.SettingsScreen.route) {
+            SettingsScreen(navigation)
         }
 
     }

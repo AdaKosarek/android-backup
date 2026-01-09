@@ -118,6 +118,7 @@ dependencies {
 
     // Splashscreen
     implementation(libs.splashscreen)
+    implementation(libs.appintro)
 
     // Testing hilt
     androidTestImplementation(libs.hilt.android.testing)
