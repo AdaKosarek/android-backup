@@ -251,7 +251,8 @@ fun FoodDetailScreenContent(
                     onClick = onSaveClick,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(46.dp),
+                        .height(46.dp)
+                        .testTag("TestTagDetailSaveButton"),
                     shape = RoundedCornerShape(50),
                     colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary)
                 ) {

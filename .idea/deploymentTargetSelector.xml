@@ -5,13 +5,19 @@
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="ExampleInstrumentedTest">
+      <SelectionState runConfigName="UITestsSearchScreen">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="UITestsDiscover">
+      <SelectionState runConfigName="test_next_with_selected_recipe_navigates_with_api_id()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="UITestsFoodDetail">
+      <SelectionState runConfigName="UITestsAddMealFormScreen">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="test_meal_is_saved_in_repository()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="test_save_meal_with_place_and_location_enabled()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

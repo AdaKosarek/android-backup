@@ -9,7 +9,9 @@ import cz.mendelu.pef.fooddiary.communication.IFoodsRemoteRepository
 import cz.mendelu.pef.fooddiary.database.ISavedMealsLocalRepository
 import cz.mendelu.pef.fooddiary.database.SavedMeal
 import cz.mendelu.pef.fooddiary.model.SavedMealSource
+import cz.mendelu.pef.fooddiary.utils.IImageStorageRepository
 import cz.mendelu.pef.fooddiary.utils.ImageStorageRepository
+import cz.mendelu.pef.fooddiary.utils.MealInputValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +22,7 @@ import javax.inject.Inject
 class AddMealFormViewModel @Inject constructor(
     private val foodsRepository: IFoodsRemoteRepository,
     private val savedMealsRepository: ISavedMealsLocalRepository,
-    private val imageStorageRepository: ImageStorageRepository
+    private val imageStorageRepository: IImageStorageRepository
 ) : ViewModel() {
 
     private var initialized = false
@@ -94,7 +96,7 @@ class AddMealFormViewModel @Inject constructor(
     ) {
         val state = _uiState.value
 
-        if (state.customName.isBlank()) {
+        if (!MealInputValidator.isCustomNameValid(state.customName)) {
             _uiState.value = state.copy(
                 error = AddMealFormError(R.string.custom_name_required)
             )
@@ -106,6 +108,9 @@ class AddMealFormViewModel @Inject constructor(
         val copiedPhotoUri = state.userPhotoUri?.let {
             imageStorageRepository.saveMealPhoto(Uri.parse(it))
         }
+
+        val finalLat = latitude ?: 50.087451
+        val finalLng = longitude ?: 14.420671
 
         val savedMeal = SavedMeal(
             source = if (recipe != null) SavedMealSource.API_PLUS_FAB  else SavedMealSource.FAB,
@@ -123,10 +128,10 @@ class AddMealFormViewModel @Inject constructor(
             customName = state.customName,
             userPhotoUri = copiedPhotoUri,
             userNote = state.userNote,
-            placeName = state.placeName.ifBlank {null},
+            placeName = MealInputValidator.normalizePlaceName(state.placeName),
 
-            latitude = latitude,
-            longitude = longitude,
+            latitude = finalLat,
+            longitude = finalLng,
 
             savedTimestamp = System.currentTimeMillis()
         )

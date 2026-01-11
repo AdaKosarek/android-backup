@@ -40,6 +40,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -224,7 +225,7 @@ fun AddMealFormContent(
         OutlinedTextField(
             value = state.customName,
             onValueChange = onCustomNameChange,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag("TestTagCustomName"),
             label = { Text(stringResource(R.string.custom_name)) },
             isError = state.customName.isBlank(),
             singleLine = true
@@ -275,7 +276,8 @@ fun AddMealFormContent(
 
             Switch(
                 checked = state.useLocation,
-                onCheckedChange = onUseLocationChange
+                onCheckedChange = onUseLocationChange,
+                modifier = Modifier.testTag("TestTagUseLocationSwitch")
             )
         }
 
@@ -286,7 +288,8 @@ fun AddMealFormContent(
             enabled = state.customName.isNotBlank(),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp),
+                .height(48.dp)
+                .testTag("TestTagSaveButton"),
             shape = RoundedCornerShape(24.dp),
             colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary)
         ) {

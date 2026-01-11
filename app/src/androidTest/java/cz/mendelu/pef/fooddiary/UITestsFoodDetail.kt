@@ -8,6 +8,7 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
@@ -99,23 +100,34 @@ class UITestsFoodDetail {
             .assertExists()
     }
 
+
     @Test
-    fun test_favorite_button_toggles() {
+    fun test_save_recipe_and_navigate_back() {
         launchDetailScreen()
 
+        composeRule.waitUntil(timeoutMillis = 5_000) {
+            composeRule
+                .onAllNodesWithTag("TestTagDetailContainer")
+                .fetchSemanticsNodes().isNotEmpty()
+        }
+
+        composeRule
+            .onNodeWithTag("TestTagDetailContainer")
+            .performScrollToNode(hasTestTag("TestTagDetailSaveButton"))
+
+        composeRule
+            .onNodeWithTag("TestTagDetailSaveButton")
+            .assertIsDisplayed()
+            .performClick()
+
         composeRule.waitForIdle()
-        Thread.sleep(400)
 
-        val fav = composeRule.onNodeWithTag("TestTagDetailFavorite")
-
-        fav.assertIsDisplayed()
-        fav.performClick()
-
-        composeRule.waitForIdle()
-        Thread.sleep(300)
-
-        fav.assertIsDisplayed()
+        composeRule
+            .onNodeWithTag("TestTagDiscoverList")
+            .assertIsDisplayed()
     }
+
+
 
     @OptIn(ExperimentalFoundationApi::class)
     private fun launchDetailScreen() {
@@ -130,7 +142,9 @@ class UITestsFoodDetail {
                 )
 
                 LaunchedEffect(Unit) {
-                    navController.navigate(FoodDetailDestination(fakeId))
+                    navController.navigate(
+                        "${Destination.FoodDetailScreen.route}/$fakeId"
+                    )
                 }
             }
         }

@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -53,6 +54,7 @@ import cz.mendelu.pef.fooddiary.ui.theme.GrayText
 import cz.mendelu.pef.fooddiary.ui.theme.OrangePrimary
 import cz.mendelu.pef.fooddiary.ui.theme.basicMargin
 import cz.mendelu.pef.fooddiary.ui.theme.halfMargin
+import cz.mendelu.pef.fooddiary.utils.TestMode
 
 @Composable
 fun SearchScreen(
@@ -97,6 +99,8 @@ fun SearchScreenContent(
     navigation: INavigationRouter,
     viewModel: SearchViewModel
 ) {
+    val isTest = TestMode.isRunningTest
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -105,11 +109,13 @@ fun SearchScreenContent(
         verticalArrangement = Arrangement.spacedBy(halfMargin())
     ) {
 
-        item {
-            FoodCameraSection(
-                viewModel = viewModel,
-                state = state
-            )
+        if (!isTest) {
+            item {
+                FoodCameraSection(
+                    viewModel = viewModel,
+                    state = state
+                )
+            }
         }
 
 
@@ -121,7 +127,7 @@ fun SearchScreenContent(
             OutlinedTextField(
                 value = state.query,
                 onValueChange = onQueryChange,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag("TestTagSearchInput"),
                 placeholder = { Text(stringResource(R.string.search_food_hint)) },
                 leadingIcon = {
                     Icon(Icons.Outlined.Search, contentDescription = null)
@@ -183,7 +189,8 @@ fun SearchScreenContent(
                 enabled = state.recipes != null || state.selectedRecipe == null,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(48.dp)
+                    .testTag("TestTagSearchNext"),
                 shape = RoundedCornerShape(24.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary)
             ) {
@@ -209,6 +216,7 @@ fun SearchRecipeRow(
 
     Card(
         modifier = Modifier
+            .testTag("TestTagSearchRecipe_${recipe.id}")
             .padding(vertical = halfMargin())
             .fillMaxWidth()
             .clickable { onClick() },
@@ -252,6 +260,7 @@ fun SearchNoneRow(
     Card(
         modifier = Modifier
             .padding(vertical = halfMargin())
+            .testTag("TestTagSearchNone")
             .fillMaxWidth()
             .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),

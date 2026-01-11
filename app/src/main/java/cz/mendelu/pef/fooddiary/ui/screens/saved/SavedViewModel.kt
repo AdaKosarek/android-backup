@@ -14,14 +14,13 @@ import javax.inject.Inject
 class SavedViewModel @Inject constructor(
     private val repository: ISavedMealsLocalRepository
 ) : ViewModel() {
+    private val _uiState =
+        MutableStateFlow<SavedScreenUIState>(SavedScreenUIState.Default)
+    val uiState: StateFlow<SavedScreenUIState> = _uiState.asStateFlow()
 
     init {
         loadMeals()
     }
-
-    private val _uiState =
-        MutableStateFlow<SavedScreenUIState>(SavedScreenUIState.Default)
-    val uiState: StateFlow<SavedScreenUIState> = _uiState.asStateFlow()
 
     fun loadMeals() {
         viewModelScope.launch {

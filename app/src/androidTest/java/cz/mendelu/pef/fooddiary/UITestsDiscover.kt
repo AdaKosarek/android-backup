@@ -56,7 +56,6 @@ class UITestsDiscover {
             .assertIsDisplayed()
     }
 
-    //ověří scrollování k poslednímu mock receptu
     @Test
     fun test_scroll_list_and_find_last_item() {
         launchDiscoverScreen()
@@ -72,7 +71,6 @@ class UITestsDiscover {
             .assertIsDisplayed()
     }
 
-    //klikne na první recept a musí navigovat na detail
     @Test
     fun test_click_first_item_and_navigate_to_detail() {
         launchDiscoverScreen()
@@ -84,7 +82,6 @@ class UITestsDiscover {
         composeRule.onNodeWithText(title).performClick()
         composeRule.waitForIdle()
 
-        // kontrola navigace podle route argumentu
         val entry = navController.currentBackStackEntry
         val destination = entry?.savedStateHandle?.get<Long>("foodId")
 
@@ -111,7 +108,7 @@ class UITestsDiscover {
 
         composeRule.onNodeWithTag("TestTagDiscoverList").assertIsDisplayed()
     }
-    //launcher DiscoverScreen
+
     @OptIn(ExperimentalFoundationApi::class)
     private fun launchDiscoverScreen() {
         composeRule.activity.setContent {

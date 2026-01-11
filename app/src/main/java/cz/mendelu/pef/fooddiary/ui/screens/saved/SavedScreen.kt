@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -85,6 +86,7 @@ fun SavedScreen(
         onBottomNavClick = { navigation.navigateTo(it) },
         floatingActionButton = {
             FloatingActionButton(
+                modifier = Modifier.testTag("TestTagSavedFab"),
                 onClick = { navigation.navigateTo(Destination.SearchScreen) },
                 containerColor = OrangePrimary
             ) {
@@ -120,7 +122,9 @@ fun SavedScreen(
                 )
                 Spacer(modifier = Modifier.weight(1f))
             } else {
-                LazyColumn {
+                LazyColumn(
+                    modifier = Modifier.testTag("TestTagSavedList")
+                ) {
                     items(filteredMeals) { meal ->
                         SavedMealRow(
                             meal = meal,
@@ -154,6 +158,7 @@ fun SavedMealRow(
 
     Card(
         modifier = Modifier
+            .testTag("TestTagSavedItem_${meal.localId}")
             .padding(horizontal = basicMargin(), vertical = halfMargin())
             .fillMaxWidth()
             .clickable { onClick() },
@@ -221,6 +226,7 @@ fun SavedFilterSwitcher(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .clickable { onSelected(filter) }
+                    .testTag("TestTagFilter_${filter.name}")
             ) {
                 Text(
                     text = when (filter) {

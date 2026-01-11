@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import cz.mendelu.pef.fooddiary.R
 import cz.mendelu.pef.fooddiary.database.ISavedMealsLocalRepository
 import cz.mendelu.pef.fooddiary.utils.ImageStorageRepository
+import cz.mendelu.pef.fooddiary.utils.MealInputValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -102,12 +103,12 @@ class SavedDetailViewModel @Inject constructor(
                 editPlaceName = meal.placeName.orEmpty()
             )
         } else {
-            if (state.editName.isBlank()) return
+            if (!MealInputValidator.isCustomNameValid(state.editName)) return
 
             val updated = meal.copy(
                 customName = state.editName,
                 userNote = state.editNote,
-                placeName = state.editPlaceName.ifBlank { null }
+                placeName = MealInputValidator.normalizePlaceName(state.editPlaceName)
             )
 
             viewModelScope.launch {

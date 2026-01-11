@@ -43,7 +43,7 @@ fun BaseScreen(
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier
-                                    .padding(start = 0.dp)
+                                    .padding(start = 0.dp).testTag("TestTagTopBarTitle")
                             )
                         }
                     },

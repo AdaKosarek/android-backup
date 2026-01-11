@@ -5,7 +5,7 @@ import cz.mendelu.pef.fooddiary.R
 
 enum class FoodCategory(
     val apiValue: String?,
-    @StringRes val labelRes: Int
+    @param:StringRes val labelRes: Int
 ) {
     ALL(null, R.string.all),
     MAIN_DISH("main dish", R.string.main_dish),

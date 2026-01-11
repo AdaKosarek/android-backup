@@ -47,6 +47,7 @@ googlemap_foundation = "1.9.4"
 googlemap_utils = "3.19.0"
 googlemap_widgets = "6.12.1"
 googlemap_compose_utils = "6.12.1"
+rules = "1.7.0"
 
 
 [libraries]
@@ -127,6 +128,7 @@ googlemap-foundation = { group = "androidx.compose.foundation", name = "foundati
 googlemap_utils = { group = "com.google.maps.android", name = "android-maps-utils", version.ref = "googlemap_utils" }
 googlemap_widgets = { group = "com.google.maps.android", name = "maps-compose-widgets", version.ref = "googlemap_widgets" }
 googlemap_compose_utils = { group = "com.google.maps.android", name = "maps-compose-utils", version.ref = "googlemap_compose_utils" }
+androidx-rules = { group = "androidx.test", name = "rules", version.ref = "rules" }
 
 
 

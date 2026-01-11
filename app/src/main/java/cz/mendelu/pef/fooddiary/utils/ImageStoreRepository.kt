@@ -11,9 +11,9 @@ import javax.inject.Singleton
 @Singleton
 class ImageStorageRepository @Inject constructor(
     @ApplicationContext private val context: Context
-) {
+) : IImageStorageRepository {
 
-    fun saveMealPhoto(sourceUri: Uri): String {
+    override fun saveMealPhoto(sourceUri: Uri): String {
         val inputStream = context.contentResolver.openInputStream(sourceUri)
             ?: throw IllegalStateException("Cannot open input stream")
 
@@ -33,7 +33,7 @@ class ImageStorageRepository @Inject constructor(
         return destinationFile.toURI().toString()
     }
 
-    fun deletePhoto(photoUri: String) {
+    override fun deletePhoto(photoUri: String) {
         runCatching {
             File(URI(photoUri)).delete()
         }

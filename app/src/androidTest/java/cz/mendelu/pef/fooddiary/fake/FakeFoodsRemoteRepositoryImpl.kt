@@ -43,4 +43,19 @@ class FakeFoodsRemoteRepositoryImpl @Inject constructor() : IFoodsRemoteReposito
         )
         */
     }
+
+    override suspend fun searchRecipes(
+        query: String
+    ): CommunicationResult<RecipesListResponse> {
+
+        val filtered = ServerMock.allRecipes.results
+            ?.filter { recipe ->
+                recipe.title?.contains(query, ignoreCase = true) == true
+            }
+            ?: emptyList()
+
+        return CommunicationResult.Success(
+            RecipesListResponse(results = filtered)
+        )
+    }
 }

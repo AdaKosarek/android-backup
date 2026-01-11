@@ -79,6 +79,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.rules)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -133,6 +134,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    testImplementation("io.mockk:mockk:1.13.10")
 
     // Room
     implementation(libs.room.ktx)
