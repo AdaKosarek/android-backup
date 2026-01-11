@@ -28,7 +28,19 @@ class MapScreenViewModel @Inject constructor(
             savedMealsRepository.getAllForMap()
                 .collect { meals ->
 
-                    val items = meals.map { SavedMealClusterItem(it) }
+                    val items = meals
+                        .groupBy { it.latitude to it.longitude }
+                        .flatMap { (_, sameLocationMeals) ->
+                            sameLocationMeals.mapIndexed { index, meal ->
+                                val offset = index * 0.00003
+                                SavedMealClusterItem(
+                                    meal.copy(
+                                        latitude = meal.latitude!! + offset,
+                                        longitude = meal.longitude!! + offset
+                                    )
+                                )
+                            }
+                        }
 
                     _uiState.value = _uiState.value.copy(
                         loading = false,

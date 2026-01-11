@@ -16,7 +16,7 @@ class ClusterMapRenderer(
 ) : DefaultClusterRenderer<SavedMealClusterItem>(context, map, clusterManager) {
 
     override fun shouldRenderAsCluster(cluster: Cluster<SavedMealClusterItem>): Boolean {
-        return cluster.size >= 3
+        return cluster.size >= 4
     }
 
     override fun onBeforeClusterItemRendered(
