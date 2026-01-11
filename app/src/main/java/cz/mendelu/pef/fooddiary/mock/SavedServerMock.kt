@@ -2,6 +2,7 @@ package cz.mendelu.pef.fooddiary.mock
 
 import cz.mendelu.pef.fooddiary.database.SavedMeal
 import cz.mendelu.pef.fooddiary.model.SavedMealSource
+import kotlin.Double
 
 object SavedServerMock {
 
@@ -9,6 +10,8 @@ object SavedServerMock {
         source = SavedMealSource.FAB,
         localId = 1L,
         customName = "My Lunch",
+        latitude = 49.1951,
+        longitude = 16.6068,
         title = null,
         apiImage = null,
         readyInMinutes = null,
@@ -25,6 +28,8 @@ object SavedServerMock {
     val savedFavorite = savedFab.copy(
         localId = 2L,
         customName = "Favorite Meal",
+        latitude = 49.8209,
+        longitude = 18.2625,
         isFavorite = true
     )
 

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -31,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -115,11 +117,12 @@ fun SavedDetailScreenContent(
         modifier = Modifier
             .fillMaxSize()
             .padding(bottom = paddingValues.calculateBottomPadding())
+            .imePadding()
             .verticalScroll(rememberScrollState())
     ) {
 
         if (meal == null) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier.fillMaxSize().testTag("TestTagNoDetailData"), contentAlignment = Alignment.Center) {
                 Text(
                     text = stringResource(R.string.no_detail_data),
                     style = MaterialTheme.typography.bodyMedium
@@ -163,6 +166,7 @@ fun SavedDetailScreenContent(
                         .padding(end = 12.dp, top = 36.dp)
                         .align(Alignment.TopEnd)
                         .background(Color.White, CircleShape)
+                        .testTag("TestTagFavoriteButton")
                 ) {
                     Icon(
                         imageVector =
@@ -183,21 +187,28 @@ fun SavedDetailScreenContent(
 
         //UZIVATEL
         if (showLocalSection) {
-            SavedMealLocalInfoSection(
-                meal = meal,
-                actions = actions,
-                isEditing = isEditing,
-                state = state
-            )
+            Column(
+                modifier = Modifier.testTag("TestTagLocalSection")
+            ) {
+                SavedMealLocalInfoSection(
+                    meal = meal,
+                    actions = actions,
+                    isEditing = isEditing,
+                    state = state
+                )
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
+            }
         }
+
 
         //API
         if (showApiSection) {
             Column(
-                modifier = Modifier.padding(horizontal = 16.dp)
-            ) {
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .testTag("TestTagApiSection")
+            ){
                 Spacer(modifier = Modifier.height(basicMargin()))
 
                 Text(
@@ -212,7 +223,7 @@ fun SavedDetailScreenContent(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Icon(Icons.Outlined.AccessTime, contentDescription = null, tint = GrayText)
-                    Text("${meal.readyInMinutes ?: "-"} min", color = GrayText)
+                    Text("${meal.readyInMinutes ?: "- min"}", color = GrayText)
 
                     Icon(Icons.Outlined.People, contentDescription = null, tint = GrayText)
                     Text("${meal.servings ?: "-"} ${stringResource(R.string.servings)}", color = GrayText)

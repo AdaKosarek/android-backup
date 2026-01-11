@@ -61,6 +61,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -149,7 +150,7 @@ fun MapScreenContent(
                     cameraPositionState.position =
                         CameraPosition.fromLatLngZoom(
                             target,
-                            if (location != null) 13f else 8f
+                            if (location != null) 13f else 9f
                         )
 
                     cameraInitialized = true
@@ -158,7 +159,7 @@ fun MapScreenContent(
                     cameraPositionState.position =
                         CameraPosition.fromLatLngZoom(
                             LatLng(49.8175, 15.4730),
-                            8f
+                            9f
                         )
                     cameraInitialized = true
                 }
@@ -170,7 +171,7 @@ fun MapScreenContent(
             cameraPositionState.position =
                 CameraPosition.fromLatLngZoom(
                     LatLng(49.8175, 15.4730),
-                    8f
+                    9f
                 )
 
             cameraInitialized = true
@@ -252,7 +253,8 @@ fun SelectedMealCard(
     onOpenDetail: (Long) -> Unit
 ) {
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth()
+            .testTag("TestTagSelectedMealCard"),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
@@ -304,6 +306,7 @@ fun SelectedMealCard(
                     color = OrangePrimary,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier
+                        .testTag("TestTagOpenDetail")
                         .padding(top = 6.dp)
                         .clickable {
                             onOpenDetail(meal.localId)

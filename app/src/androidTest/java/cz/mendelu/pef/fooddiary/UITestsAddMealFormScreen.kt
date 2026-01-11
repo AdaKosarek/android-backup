@@ -9,14 +9,10 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.FixMethodOrder
 import org.junit.runners.MethodSorters
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
-import androidx.compose.ui.test.hasText
-
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.navigation.NavHostController
@@ -24,11 +20,8 @@ import androidx.test.rule.GrantPermissionRule
 import cz.mendelu.pef.fooddiary.fake.FakeSavedMealsLocalRepository
 import cz.mendelu.pef.fooddiary.ui.activities.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertNotNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

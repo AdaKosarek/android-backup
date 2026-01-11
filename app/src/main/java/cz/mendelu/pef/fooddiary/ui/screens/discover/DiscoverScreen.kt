@@ -189,7 +189,7 @@ fun RecipeRow(
             stringResource(R.string.food)
     }
 
-    val time = recipe.readyInMinutes?.let { "$it min" }
+    val time = recipe.readyInMinutes?.let { "$it " }
         ?: stringResource(R.string.unknown)
 
 

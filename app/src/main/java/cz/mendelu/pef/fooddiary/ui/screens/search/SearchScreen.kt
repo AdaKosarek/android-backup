@@ -128,7 +128,7 @@ fun SearchScreenContent(
                 value = state.query,
                 onValueChange = onQueryChange,
                 modifier = Modifier.fillMaxWidth().testTag("TestTagSearchInput"),
-                placeholder = { Text(stringResource(R.string.search_food_hint)) },
+                placeholder = { Text("Pasta") },
                 leadingIcon = {
                     Icon(Icons.Outlined.Search, contentDescription = null)
                 },

@@ -43,7 +43,8 @@ fun PlaceHolderScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.Center)
-                .padding(basicMargin())) {
+                .padding(basicMargin())
+                .testTag("TestTagErrorPlaceholder")) {
 
             if (content.image != null) {
                 Image(

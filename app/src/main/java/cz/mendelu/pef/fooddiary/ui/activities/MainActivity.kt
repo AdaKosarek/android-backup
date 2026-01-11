@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FoodDiaryTheme {
-                NavGraph(startDestination = Destination.SavedScreen.route)
+                NavGraph(startDestination = Destination.DiscoverScreen.route)
             }
         }
     }

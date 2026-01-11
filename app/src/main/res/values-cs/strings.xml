@@ -24,7 +24,6 @@
     <string name="add_option_search_recipe_title">Vyhledat recept</string>
     <string name="add_option_search_recipe_desc">Najděte jídlo v naší databázi podle názvu.</string>
     <string name="search_food">Vyhledat recept</string>
-    <string name="search_food_hint">„Těstoviny“</string>
     <string name="next">Další</string>
     <string name="search_none">Pokračovat bez výběru receptu</string>
     <string name="custom_name_required">Vlastní název je povinný</string>
@@ -72,5 +71,5 @@
     <string name="delete">Odstranit</string>
     <string name="cancel">Zrušit</string>
     <string name="version">Verze</string>
-
+    <string name="data_cleared">Data vymazana.</string>
 </resources>

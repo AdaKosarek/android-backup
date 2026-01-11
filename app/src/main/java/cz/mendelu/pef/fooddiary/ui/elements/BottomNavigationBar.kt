@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -38,6 +39,10 @@ fun BottomNavigationBar(
         Destination.MapScreen,
         Destination.SettingsScreen
     )
+    val testTagBottomNav_Discover = "TestTagBottomNav_Discover"
+    val testTagBottomNav_Saved = "TestTagBottomNav_Saved"
+    val testTagBottomNav_Map = "TestTagBottomNav_Map"
+    val testTagBottomNav_Settings = "TestTagBottomNav_Settings"
 
     Column {
         // horní oddělovací linka
@@ -77,6 +82,15 @@ fun BottomNavigationBar(
                 }
 
                 NavigationBarItem(
+                    modifier = Modifier.testTag(
+                        when (destination) {
+                            Destination.DiscoverScreen -> testTagBottomNav_Discover
+                            Destination.SavedScreen -> testTagBottomNav_Saved
+                            Destination.MapScreen -> testTagBottomNav_Map
+                            Destination.SettingsScreen -> testTagBottomNav_Settings
+                            else -> destination.route
+                        }
+                    ),
                     selected = selected,
                     onClick = { onItemClick(destination) },
                     icon = {

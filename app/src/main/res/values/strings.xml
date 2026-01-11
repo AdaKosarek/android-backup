@@ -23,7 +23,6 @@
     <string name="add_option_search_recipe_title">Search food recipe</string>
     <string name="add_option_search_recipe_desc">Find a meal in our database by name.</string>
     <string name="search_food">Search recipe</string>
-    <string name="search_food_hint">\"Pasta\"</string>
     <string name="next">Next</string>
     <string name="search_none">Continue without selecting recipe</string>
     <string name="custom_name_required">Custom name is required</string>
@@ -71,4 +70,5 @@
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
     <string name="version">Version</string>
+    <string name="data_cleared">Data cleared.</string>
 </resources>

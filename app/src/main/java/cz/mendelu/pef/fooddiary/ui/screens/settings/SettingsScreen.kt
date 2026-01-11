@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -81,6 +82,7 @@ fun SettingsScreenContent(
 ) {
     if (state.showConfirmDialog) {
         AlertDialog(
+            modifier = Modifier.testTag("TestTagConfirmDialog"),
             onDismissRequest = actions::onDismissClearDialog,
             title = {
                 Text(stringResource(R.string.remove_app_data))
@@ -89,7 +91,8 @@ fun SettingsScreenContent(
                 Text(stringResource(R.string.remove_app_data_confirm))
             },
             confirmButton = {
-                TextButton(onClick = actions::onConfirmClearAppData) {
+                TextButton(modifier = Modifier.testTag("TestTagConfirmDeleteButton"),
+                    onClick = actions::onConfirmClearAppData) {
                     Text(
                         text = stringResource(R.string.delete),
                         color = RedDark
@@ -97,13 +100,19 @@ fun SettingsScreenContent(
                 }
             },
             dismissButton = {
-                TextButton(onClick = actions::onDismissClearDialog) {
+                TextButton(modifier = Modifier.testTag("TestTagCancelDeleteButton"),
+                    onClick = actions::onDismissClearDialog) {
                     Text(stringResource(R.string.cancel))
                 }
             }
         )
     }
-
+    if (state.dataCleared) {
+        Text(
+            text = stringResource(R.string.data_cleared),
+            modifier = Modifier.testTag("TestTagDataCleared")
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -119,7 +128,7 @@ fun SettingsScreenContent(
         Spacer(modifier = Modifier.height(halfMargin()))
 
         Card(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().testTag("TestTagClearAppDataCard")
                                 .clickable { actions.onClearAppDataClick() },
             colors = CardDefaults.cardColors(containerColor = Color.White),
             shape = RoundedCornerShape(16.dp),
