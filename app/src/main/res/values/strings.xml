@@ -10,4 +10,6 @@
     <string name="package_count">package count: </string>
     <string name="total_weight">total weight: </string>
     <string name="stop_location">Stop location</string>
+    <string name="notification_channel_id_packages">notifikace kanal id</string>
+    <string name="notification_channel_name_packages">notifikace jmeno</string>
 </resources>

@@ -1,5 +1,6 @@
 package cz.mendelu.pef.pokus1.ui.screens.detail
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -43,6 +45,7 @@ import cz.mendelu.pef.pokus1.R
 import cz.mendelu.pef.pokus1.model.PackageDTO
 import cz.mendelu.pef.pokus1.navigation.INavigationRouter
 import cz.mendelu.pef.pokus1.navigation.StopDetailDestination
+import cz.mendelu.pef.pokus1.notification.showPackageNotification
 import cz.mendelu.pef.pokus1.ui.elements.BaseScreen
 import cz.mendelu.pef.pokus1.ui.elements.PlaceholderScreenContent
 import java.math.BigDecimal
@@ -89,7 +92,7 @@ fun DetailScreenContent(
     paddingValues: PaddingValues,
     state: DetailScreenUIState
 ) {
-
+    val context = LocalContext.current
     val roundedWeight = BigDecimal(state.totalWeight)
         .setScale(1, RoundingMode.HALF_UP)
         .toDouble()
@@ -150,7 +153,10 @@ fun DetailScreenContent(
             Spacer(modifier = Modifier.height(8.dp))
 
             PackagesList(
-                packages = state.packages
+                packages = state.packages,
+                onPackageClick = { recipientName ->
+                    context.showPackageNotification(recipientName)
+                }
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -169,6 +175,7 @@ fun DetailScreenContent(
     }
 }
 
+//MAPA
 @OptIn(MapsComposeExperimentalApi::class)
 @Composable
 fun StopMap(
@@ -218,7 +225,8 @@ fun StopMap(
 //PACKAGES FOR STOP
 @Composable
 fun PackagesList(
-    packages: List<PackageDTO>
+    packages: List<PackageDTO>,
+    onPackageClick: (String) -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -230,7 +238,12 @@ fun PackagesList(
         ) {
             packages.forEachIndexed { index, pkg ->
 
-                PackageRow(pkg)
+                PackageRow(
+                    pkg = pkg,
+                    onClick = {
+                        onPackageClick(pkg.recipientName.orEmpty())
+                    }
+                )
 
                 if (index != packages.lastIndex) {
                     Spacer(modifier = Modifier.height(8.dp))
@@ -245,9 +258,14 @@ fun PackagesList(
 
 @Composable
 fun PackageRow(
-    pkg: PackageDTO
+    pkg: PackageDTO,
+    onClick: () -> Unit
 ) {
     Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
