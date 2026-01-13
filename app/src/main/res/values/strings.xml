@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Pokus1</string>
+    <string name="back">Back</string>
+    <string name="no_internet_connection">No internet connection.</string>
+    <string name="failed_to_load_stops">Failed to load stops.</string>
+    <string name="exception">Exception.</string>
+    <string name="stops">Stops</string>
+    <string name="failed_to_load_detail">Failed to load detail.</string>
+    <string name="detail">Detail</string>
+    <string name="package_count">package count: </string>
+    <string name="total_weight">total weight: </string>
+    <string name="stop_location">Stop location</string>
+</resources>
