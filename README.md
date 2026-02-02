@@ -10,6 +10,11 @@ The objective was to simulate a backend API and learn how to handle client–ser
 - Local notifications
 - Basic UI interaction and data flow
 
+## Simulated API data
+- api_data/
+- for first server - stops.json
+- for second server - dvojka/packages.json
+
 ## Local.properties
 server="url"
 server1="url/dvojka/"
