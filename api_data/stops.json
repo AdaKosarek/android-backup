@@ -1,0 +1,49 @@
+{
+  "stops": [
+    {
+      "id": 1,
+      "name": "Brno – Česká",
+      "street": "Česká 12",
+      "city": "Brno",
+      "postalCode": "60200",
+      "latitude": 49.195061,
+      "longitude": 16.606836
+    },
+    {
+      "id": 2,
+      "name": "Brno – Královo Pole",
+      "street": "Palackého třída 85",
+      "city": "Brno",
+      "postalCode": "61200",
+      "latitude": 49.226736,
+      "longitude": 16.592732
+    },
+    {
+      "id": 3,
+      "name": "Brno – Bohunice",
+      "street": "Jihlavská 20",
+      "city": "Brno",
+      "postalCode": "62500",
+      "latitude": 49.169939,
+      "longitude": 16.579876
+    },
+    {
+      "id": 4,
+      "name": "Brno – Líšeň",
+      "street": "Masarova 15",
+      "city": "Brno",
+      "postalCode": "62800",
+      "latitude": 49.207815,
+      "longitude": 16.677524
+    },
+    {
+      "id": 5,
+      "name": "Brno – Bystrc",
+      "street": "Ečerova 10",
+      "city": "Brno",
+      "postalCode": "63500",
+      "latitude": 49.230181,
+      "longitude": 16.522491
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+[
+  {
+    "id": 101,
+    "recipientName": "Jan Novák",
+    "weightKg": 2.4,
+    "type": "BOX",
+    "stopId": 1
+  },
+  {
+    "id": 102,
+    "recipientName": "Petra Malá",
+    "weightKg": 1.2,
+    "type": "ENVELOPE",
+    "stopId": 1
+  },
+  {
+    "id": 103,
+    "recipientName": "Tomáš Dvořák",
+    "weightKg": 5.8,
+    "type": "BOX",
+    "stopId": 2
+  },
+  {
+    "id": 104,
+    "recipientName": "Lucie Králová",
+    "weightKg": 0.9,
+    "type": "ENVELOPE",
+    "stopId": 2
+  },
+  {
+    "id": 105,
+    "recipientName": "Martin Svoboda",
+    "weightKg": 3.1,
+    "type": "BOX",
+    "stopId": 3
+  },
+  {
+    "id": 106,
+    "recipientName": "Eva Černá",
+    "weightKg": 7.4,
+    "type": "BOX",
+    "stopId": 3
+  },
+  {
+    "id": 107,
+    "recipientName": "Ondřej Veselý",
+    "weightKg": 1.6,
+    "type": "ENVELOPE",
+    "stopId": 4
+  },
+  {
+    "id": 108,
+    "recipientName": "Kateřina Procházková",
+    "weightKg": 4.3,
+    "type": "BOX",
+    "stopId": 4
+  },
+  {
+    "id": 109,
+    "recipientName": "Michal Beneš",
+    "weightKg": 2.0,
+    "type": "ENVELOPE",
+    "stopId": 5
+  },
+  {
+    "id": 110,
+    "recipientName": "Alena Horáková",
+    "weightKg": 6.5,
+    "type": "BOX",
+    "stopId": 5
+  }
+]
